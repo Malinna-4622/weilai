@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#06B6D4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="未来">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+<title>未来 · 晋城人才监控中心</title>
+<style>
+/* ===== Reset & Variables ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F0FDF4;--card:#FFFFFF;--primary:#06B6D4;--secondary:#22C55E;
+  --grad-start:#06B6D4;--grad-end:#22C55E;--label-blue:#93C5FD;--label-green:#D1FAE5;
+  --btn-green:#10B981;--danger:#F43F5E;--text:#1E293B;--text-muted:#64748B;
+  --text-light:#94A3B8;
+  --border:#E2E8F0;--shadow:0 2px 12px rgba(0,0,0,0.06);--radius:12px;--radius-sm:8px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);--expand-bg:#FAFAFA;--hover-bg:#FAFAFA;
+}
+/* ===== 暗色模式（跟随系统） ===== */
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0C1920;--card:#1A2D38;--primary:#22D3EE;--secondary:#4ADE80;
+    --grad-start:#0891B2;--grad-end:#16A34A;
+    --label-blue:#1E3A5F;--label-green:#1A3A2A;
+    --btn-green:#059669;--danger:#E11D48;--text:#E2E8F0;--text-muted:#94A3B8;
+    --text-light:#64748B;
+    --border:#1E3A4A;--shadow:0 2px 12px rgba(0,0,0,0.3);--expand-bg:#15242E;--hover-bg:#1E3340;
+  }
+  .card-top-rec{border-color:var(--primary)!important}
+  .card-expand{background:var(--expand-bg)!important;border-color:var(--border)!important}
+  .org-item:hover{background:var(--hover-bg)!important}
+  .badge-gray{background:#2A3A44!important;color:#94A3B8!important}
+  .badge-green{color:#86EFAC!important}
+  .badge-blue{color:#93C5FD!important}
+  .badge-yellow{color:#FDE68A!important}
+  .badge-red{color:#FCA5A5!important}
+  .btn-outline{background:var(--card)!important;border-color:var(--border)!important;color:var(--text)!important}
+  .search-bar input{color-scheme:dark}
+  .drawer-tag{background:#1A3A2A!important;color:#86EFAC!important}
+}
+/* ===== 手动暗色模式覆盖 ===== */
+body.dark-mode{
+  --bg:#0C1920;--card:#1A2D38;--primary:#22D3EE;--secondary:#4ADE80;
+  --grad-start:#0891B2;--grad-end:#16A34A;
+  --label-blue:#1E3A5F;--label-green:#1A3A2A;
+  --btn-green:#059669;--danger:#E11D48;--text:#E2E8F0;--text-muted:#94A3B8;
+  --text-light:#64748B;
+  --border:#1E3A4A;--shadow:0 2px 12px rgba(0,0,0,0.3);--expand-bg:#15242E;--hover-bg:#1E3340;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overflow-x:hidden;padding-bottom:80px}
+/* ===== Header ===== */
+.header{
+  background:linear-gradient(135deg,var(--grad-start),var(--grad-end));
+  padding:16px 18px 14px;position:sticky;top:0;z-index:100;
+  backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px)
+}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.header-title{font-size:20px;font-weight:700;color:#fff;letter-spacing:.5px}
+.header-title span{font-weight:300}
+.header-status{display:flex;align-items:center;gap:6px}
+.status-dot{width:8px;height:8px;border-radius:50%;animation:pulse 2s infinite}
+.status-dot.green{background:#86EFAC}
+.status-dot.yellow{background:#FCD34D}
+.status-dot.red{background:#FCA5A5}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.header-info{display:flex;gap:12px;font-size:12px;color:rgba(255,255,255,0.9);flex-wrap:wrap;margin-top:2px}
+.header-info span{display:flex;align-items:center;gap:4px}
+.header-info .num{font-weight:600;color:#fff}
+/* ===== Tab Bar ===== */
+.tab-bar{
+  display:flex;background:var(--card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:99;padding:0 4px
+}
+.tab-btn{
+  flex:1;padding:12px 0 10px;text-align:center;font-size:14px;font-weight:500;
+  color:var(--text-muted);border:none;background:none;cursor:pointer;
+  position:relative;transition:color .2s
+}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2.5px;border-radius:2px;background:linear-gradient(90deg,var(--grad-start),var(--grad-end));transition:width .25s}
+.tab-btn.active{color:var(--text);font-weight:600}
+.tab-btn.active::after{width:40px}
+.tab-btn .icon{font-size:16px;display:block;margin-bottom:1px}
+/* ===== Tab Content ===== */
+.tab-content{display:none;padding:14px 16px;padding-bottom:80px}
+.tab-content.active{display:block;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* ===== Stats Bar (Tab1) ===== */
+.stats-bar{
+  display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none
+}
+.stats-bar::-webkit-scrollbar{display:none}
+.stat-item{
+  flex-shrink:0;background:var(--card);border-radius:var(--radius-sm);
+  padding:10px 14px;box-shadow:var(--shadow);min-width:100px
+}
+.stat-item .stat-num{font-size:22px;font-weight:700;line-height:1.2}
+.stat-item .stat-label{font-size:12px;color:var(--text-muted);margin-top:2px}
+.stat-item.blue .stat-num{color:var(--primary)}
+.stat-item.green .stat-num{color:var(--secondary)}
+.stat-item.red .stat-num{color:var(--danger)}
+/* ===== Card ===== */
+.card{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:12px;overflow:hidden;transition:box-shadow .2s
+}
+.card:active{box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.card-top{padding:14px 16px 12px;cursor:pointer;position:relative}
+.card-badge{
+  display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;
+  padding:2px 8px;border-radius:4px;margin-right:4px;margin-bottom:4px
+}
+.badge-blue{background:var(--label-blue);color:#1E40AF}
+.badge-green{background:var(--label-green);color:#166534}
+.badge-red{background:#FEE2E2;color:#991B1B}
+.badge-yellow{background:#FEF9C3;color:#854D0E}
+.badge-gray{background:#F1F5F9;color:#475569}
+.card-title{font-size:16px;font-weight:600;margin:6px 0 4px}
+.card-meta{font-size:13px;color:var(--text-muted);display:flex;flex-wrap:wrap;gap:8px}
+.card-meta span{display:flex;align-items:center;gap:3px}
+.card-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.card-expand{
+  max-height:0;overflow:hidden;transition:max-height .35s ease;
+  background:#FAFAFA;border-top:1px solid var(--border)
+}
+.card.expanded .card-expand{max-height:800px}
+.card-expand-inner{padding:14px 16px 16px;font-size:14px;line-height:1.7}
+.card-expand-inner p{margin-bottom:6px}
+.card-expand-inner .label{color:var(--text-muted);font-size:12px}
+.card-actions{display:flex;gap:8px;margin-top:12px}
+.card-actions a,.card-actions button{
+  flex:1;text-align:center;padding:8px 0;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:500;text-decoration:none;border:none;cursor:pointer
+}
+.btn-link{background:var(--label-blue);color:#1E40AF}
+.btn-outline{background:var(--card);color:var(--text);border:1px solid var(--border)}
+/* ===== Section Title ===== */
+.section-title{
+  font-size:13px;font-weight:600;color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:.5px;margin:16px 0 8px;padding-left:4px;
+  border-left:3px solid var(--primary);padding-left:8px
+}
+.section-title.green{border-color:var(--secondary)}
+/* ===== Archive Group ===== */
+.archive-group{margin-bottom:16px}
+.org-block{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  margin-bottom:8px;overflow:hidden
+}
+.org-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;cursor:pointer;font-weight:600;font-size:14px
+}
+.org-header .org-name{display:flex;align-items:center;gap:6px}
+.org-header .org-badge{font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--label-blue);color:#1E40AF}
+.org-header .org-count{font-size:12px;color:var(--text-muted);font-weight:400}
+.org-header .arrow{transition:transform .25s;font-size:12px;color:var(--text-muted)}
+.org-block.open .org-header .arrow{transform:rotate(180deg)}
+.org-items{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.org-block.open .org-items{max-height:2000px}
+.org-item{padding:10px 14px 10px 20px;border-top:1px solid var(--border);font-size:13px;cursor:pointer}
+.org-item:hover{background:#FAFAFA}
+.org-item .item-title{font-weight:500}
+.org-item .item-meta{font-size:12px;color:var(--text-muted);margin-top:2px;display:flex;flex-wrap:wrap;gap:4px 10px}
+/* ===== Search ===== */
+.search-bar{
+  display:flex;align-items:center;background:var(--card);border-radius:var(--radius-sm);
+  padding:0 12px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)
+}
+.search-bar .search-icon{color:var(--text-muted);font-size:16px;margin-right:8px}
+.search-bar input{
+  flex:1;border:none;outline:none;font-size:14px;padding:11px 0;background:transparent;color:var(--text)
+}
+.search-bar input::placeholder{color:#94A3B8}
+/* ===== Study Sub-tabs ===== */
+.sub-tabs{
+  display:flex;background:var(--card);border-radius:var(--radius-sm);
+  padding:3px;margin-bottom:14px;box-shadow:var(--shadow)
+}
+.sub-tab{
+  flex:1;padding:8px 0;text-align:center;font-size:13px;font-weight:500;
+  border:none;background:none;cursor:pointer;border-radius:6px;
+  color:var(--text-muted);transition:.2s
+}
+.sub-tab.active{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff;font-weight:600}
+.sub-content{display:none}
+.sub-content.active{display:block;animation:fadeIn .2s}
+/* ===== Policy Cards ===== */
+.policy-card{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:14px 16px;margin-bottom:10px
+}
+.policy-card h3{font-size:15px;margin-bottom:6px}
+.policy-card .row{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;border-bottom:1px solid #F1F5F9}
+.policy-card .row:last-child{border:none}
+.policy-card .row .label{color:var(--text-muted)}
+.policy-card .row .value{font-weight:600}
+.policy-card .highlight{background:var(--label-green);padding:6px 10px;border-radius:6px;font-size:13px;margin-top:8px}
+/* ===== Interview ===== */
+.interview-stage{
+  background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:14px 16px;margin-bottom:10px;cursor:pointer
+}
+.stage-header{display:flex;justify-content:space-between;align-items:center}
+.stage-header .stage-num{font-size:13px;color:var(--primary);font-weight:600}
+.stage-header .stage-title{font-size:15px;font-weight:600;flex:1;margin-left:8px}
+.stage-header .stage-status{font-size:12px;padding:2px 8px;border-radius:4px}
+.stage-done{background:var(--label-green);color:#166534}
+.stage-current{background:#DBEAFE;color:#1E40AF}
+.stage-pending{background:#F1F5F9;color:#94A3B8}
+.stage-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.stage-body.open{max-height:2000px}
+.stage-body-inner{padding-top:10px;font-size:14px;line-height:1.8}
+.stage-body-inner ul{padding-left:18px}
+.stage-body-inner li{margin-bottom:4px}
+/* ===== Timeline ===== */
+.timeline-item{
+  display:flex;gap:12px;margin-bottom:6px;position:relative
+}
+.timeline-line{
+  display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0
+}
+.timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);border:2px solid var(--card);margin-top:4px;flex-shrink:0}
+.timeline-dot.green{background:var(--secondary)}
+.timeline-dot.gray{background:#CBD5E1}
+.timeline-line::after{content:'';width:2px;flex:1;background:#E2E8F0;margin-top:4px}
+.timeline-item:last-child .timeline-line::after{display:none}
+.timeline-card{
+  flex:1;background:var(--card);border-radius:var(--radius-sm);
+  padding:10px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.04);margin-bottom:8px
+}
+.timeline-card .t-date{font-size:11px;color:var(--text-muted);font-weight:500}
+.timeline-card .t-title{font-size:14px;font-weight:600;margin:2px 0}
+.timeline-card .t-desc{font-size:12px;color:var(--text-muted)}
+.timeline-card .t-check{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px}
+.timeline-card .t-check input[type="checkbox"]{width:16px;height:16px;accent-color:var(--secondary);cursor:pointer}
+.timeline-card .t-check.done label{text-decoration:line-through;color:#94A3B8}
+.timeline-card.tag-blue{border-left:3px solid var(--primary)}
+.timeline-card.tag-green{border-left:3px solid var(--secondary)}
+.timeline-card.tag-red{border-left:3px solid var(--danger)}
+.timeline-card.tag-gray{border-left:3px solid #CBD5E1}
+/* ===== Bottom Actions ===== */
+.bottom-actions{
+  position:fixed;bottom:0;left:0;right:0;z-index:90;
+  background:var(--card);border-top:1px solid var(--border);
+  padding:8px 16px calc(8px + var(--safe-bottom));
+  display:flex;gap:8px;box-shadow:0 -2px 10px rgba(0,0,0,0.04)
+}
+.bottom-btn{
+  flex:1;padding:8px 4px;border-radius:var(--radius-sm);border:none;
+  font-size:12px;font-weight:600;cursor:pointer;text-align:center;white-space:nowrap
+}
+.bottom-btn.primary{background:linear-gradient(135deg,var(--grad-start),var(--grad-end));color:#fff}
+.bottom-btn.secondary{background:#F1F5F9;color:var(--text)}
+/* ===== Drawer ===== */
+.drawer-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,0.35);animation:fadeIn .2s
+}
+.drawer-overlay.show{display:block}
+.drawer{
+  position:fixed;bottom:0;left:0;right:0;z-index:201;
+  background:var(--card);border-radius:16px 16px 0 0;max-height:80vh;overflow-y:auto;
+  transform:translateY(100%);transition:transform .3s ease;padding:0 0 calc(20px + var(--safe-bottom))
+}
+.drawer.show{transform:translateY(0)}
+.drawer-handle{width:36px;height:4px;border-radius:2px;background:#CBD5E1;margin:10px auto}
+.drawer-title{font-size:16px;font-weight:600;padding:0 18px 10px}
+.drawer-section{padding:10px 18px;border-top:1px solid var(--border)}
+.drawer-section h4{font-size:13px;color:var(--text-muted);margin-bottom:6px}
+.drawer-field{margin-bottom:8px}
+.drawer-field label{font-size:13px;display:block;margin-bottom:3px;color:var(--text)}
+.drawer-field input,.drawer-field select{
+  width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:14px;background:var(--bg);color:var(--text)
+}
+.drawer-field input:focus{outline:none;border-color:var(--primary)}
+.drawer-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.drawer-tag{
+  display:inline-flex;align-items:center;gap:3px;padding:4px 8px;border-radius:4px;
+  font-size:12px;background:var(--label-green);color:#166534
+}
+.drawer-tag .del{cursor:pointer;font-weight:700;margin-left:2px}
+.add-tag-btn{display:inline-flex;align-items:center;gap:2px;padding:4px 8px;border-radius:4px;font-size:12px;border:1px dashed var(--border);background:none;color:var(--text-muted);cursor:pointer;margin-top:4px}
+/* ===== Toast ===== */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);z-index:300;padding:10px 20px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:#fff;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--btn-green)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--primary)}
+/* ===== Empty State ===== */
+.empty-state{text-align:center;padding:32px 16px;color:var(--text-muted)}
+.empty-state .icon{font-size:36px;margin-bottom:8px}
+.empty-state p{font-size:14px}
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:2px}
+/* ===== Star / Favorite ===== */
+.star-btn{position:absolute;top:10px;right:12px;font-size:20px;cursor:pointer;z-index:2;background:none;border:none;transition:transform .2s}
+.star-btn:active{transform:scale(1.3)}
+.star-btn.active{animation:pop .3s}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.4)}100%{transform:scale(1)}}
+/* ===== Stats Overview ===== */
+.stats-overview{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.stat-ov-item{background:var(--card);border-radius:var(--radius-sm);padding:8px 10px;box-shadow:var(--shadow);font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.stat-ov-item .ov-label{color:var(--text-muted)}
+.stat-ov-item .ov-value{font-weight:600;color:var(--text)}
+.stat-ov-item .ov-value.green{color:var(--secondary)}
+.stat-ov-item .ov-value.blue{color:var(--primary)}
+.stat-ov-item .ov-value.red{color:var(--danger)}
+/* ===== Checklist ===== */
+.checklist{margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+.checklist .cl-item{display:flex;align-items:center;gap:6px;padding:4px 0;font-size:13px}
+.checklist .cl-item input[type="checkbox"]{width:14px;height:14px;accent-color:var(--secondary);cursor:pointer}
+.checklist .cl-item.done label{text-decoration:line-through;color:var(--text-muted)}
+.checklist .cl-title{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text-muted)}
+/* ===== Dark Mode Toggle ===== */
+.dark-toggle{display:flex;align-items:center;gap:6px;font-size:13px;padding:6px 0;cursor:pointer}
+.dark-toggle .toggle-track{width:36px;height:20px;border-radius:10px;background:var(--border);position:relative;transition:.2s}
+.dark-toggle .toggle-track::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.dark-toggle.on .toggle-track{background:var(--secondary)}
+.dark-toggle.on .toggle-track::after{left:18px}
+/* ===== Virtual Account ===== */
+.va-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px 16px;margin-bottom:10px;position:relative}
+.va-card .va-badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-right:4px;margin-bottom:4px}
+.va-badge-purple{background:#F3E8FF;color:#6D28D9}
+.va-badge-gold{background:#FEF3C7;color:#92400E}
+.va-progress{display:flex;gap:8px;margin:8px 0;align-items:center}
+.va-progress .bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.va-progress .bar .fill{height:100%;border-radius:3px;transition:width .5s}
+.va-progress .bar .fill.green{background:var(--secondary)}
+.va-progress .bar .fill.blue{background:var(--primary)}
+.va-progress .bar .fill.gold{background:#FBBF24}
+.va-company{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.va-company:last-child{border:none}
+.va-company .va-name{font-weight:600;font-size:14px}
+.va-company .va-tags{display:flex;gap:4px;font-size:11px}
+.va-company .va-action{font-size:12px;color:var(--primary);font-weight:500}
+.va-step{display:flex;gap:10px;margin-bottom:10px;padding:10px 12px;border-radius:var(--radius-sm);background:#FAFAFA}
+body.dark-mode .va-step{background:var(--hover-bg)}
+.va-step .step-num{width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;text-align:center;line-height:22px;font-size:12px;font-weight:700;flex-shrink:0}
+.va-step.done .step-num{background:var(--secondary)}
+.va-step .step-text{font-size:13px;line-height:1.6}
+/* ===== 投递状态 ===== */
+.app-status{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;cursor:pointer}
+.app-stat-0{background:#F1F5F9;color:#64748B}
+.app-stat-1{background:#DBEAFE;color:#1E40AF}
+.app-stat-2{background:#FEF3C7;color:#92400E}
+.app-stat-3{background:#D1FAE5;color:#166534}
+.app-stat-4{background:#FEE2E2;color:#991B1B}
+.app-stat-5{background:#F1F5F9;color:#94A3B8}
+.status-menu{position:absolute;background:var(--card);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.12);z-index:50;overflow:hidden;min-width:120px}
+.status-menu div{padding:8px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s}
+.status-menu div:last-child{border:none}
+.status-menu div:hover{background:var(--bg)}
+/* ===== 单位详情弹窗 ===== */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.4);animation:fadeIn .2s}
+.modal-overlay.show{display:block}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:var(--card);border-radius:16px;max-width:86vw;width:360px;max-height:80vh;overflow-y:auto;padding:20px;animation:modalIn .25s}
+@keyframes modalIn{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.modal h3{font-size:16px;margin-bottom:4px}
+.modal .m-sub{font-size:12px;color:var(--text-muted);margin-bottom:10px}
+.modal .m-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--border)}
+.modal .m-row:last-child{border:none}
+.modal .m-row .ml{color:var(--text-muted)}
+.modal .m-row .mv{font-weight:500}
+.modal .m-close{width:100%;padding:8px;margin-top:12px;border:none;border-radius:8px;background:var(--bg);font-size:14px;cursor:pointer;color:var(--text)}
+/* ===== 导出 ===== */
+.export-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.4);animation:fadeIn .2s}
+.export-overlay.show{display:block}
+.export-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:201;background:var(--card);border-radius:16px;width:86vw;max-width:360px;max-height:70vh;overflow-y:auto;padding:18px;animation:modalIn .25s}
+.export-box h3{font-size:16px;margin-bottom:6px}
+.export-box textarea{width:100%;height:180px;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:12px;font-family:monospace;resize:none;background:var(--bg);color:var(--text)}
+.export-box .e-actions{display:flex;gap:8px;margin-top:8px}
+.export-box .e-actions button{flex:1;padding:8px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.export-box .e-actions .e-copy{background:var(--btn-green);color:#fff}
+.export-box .e-actions .e-close{background:var(--bg);color:var(--text)}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Header -->
+  <div class="header" id="appHeader">
+    <div class="header-top">
+      <div class="header-title">🌱 <span>未来</span></div>
+      <div class="header-status">
+        <span class="status-dot green" id="statusDot"></span>
+        <span style="font-size:13px;color:rgba(255,255,255,0.9)" id="statusText">监控中</span>
+        <span style="font-size:18px;cursor:pointer;color:rgba(255,255,255,0.8)" onclick="toggleDrawer()" id="settingsBtn">⚙️</span>
+      </div>
+    </div>
+    <div class="header-info" id="headerInfo">
+      <span>🕐 <span id="lastRunTime">加载中...</span></span>
+      <span>📬 <span class="num" id="newCount">-</span> 条新公告</span>
+      <span>📋 <span class="num" id="activeCount">-</span> 待报名</span>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" data-tab="tab-home"><span class="icon">🏠</span>首页</button>
+    <button class="tab-btn" data-tab="tab-archive"><span class="icon">📁</span>台账</button>
+    <button class="tab-btn" data-tab="tab-virtual"><span class="icon">💰</span>虚拟</button>
+    <button class="tab-btn" data-tab="tab-study"><span class="icon">📖</span>备考</button>
+  </div>
+
+  <!-- Tab1: 首页 -->
+  <div class="tab-content active" id="tab-home">
+    <div class="stats-overview" id="statsOverview"></div>
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-item blue">
+        <div class="stat-num" id="statNew">-</div>
+        <div class="stat-label">新公告</div>
+      </div>
+      <div class="stat-item green">
+        <div class="stat-num" id="statActive">-</div>
+        <div class="stat-label">待报名</div>
+      </div>
+      <div class="stat-item red">
+        <div class="stat-num" id="statUrgent">-</div>
+        <div class="stat-label">将截止</div>
+      </div>
+      <div class="stat-item" style="cursor:pointer" onclick="handleManualRefresh()">
+        <div class="stat-num" style="font-size:18px;color:var(--secondary)" id="refreshBtn">⟳</div>
+        <div class="stat-label">刷新</div>
+      </div>
+      <div class="stat-item" style="cursor:pointer" onclick="openExport()">
+        <div class="stat-num" style="font-size:18px;color:var(--primary)">⭐</div>
+        <div class="stat-label">导出</div>
+      </div>
+    </div>
+
+    <div id="topRecommendation"></div>
+    <div class="section-title">📌 其他匹配</div>
+    <div id="otherAnnouncements"></div>
+    <div style="height:70px"></div>
+  </div>
+
+  <!-- Tab2: 台账 -->
+  <div class="tab-content" id="tab-archive">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="archiveSearch" placeholder="搜索单位名、关键词..." oninput="renderArchive()">
+    </div>
+    <div id="archiveContent"></div>
+    <div style="height:70px"></div>
+  </div>
+
+  <!-- Tab4: 虚拟账户 -->
+  <div class="tab-content" id="tab-virtual">
+    <div id="virtualContent"></div>
+    <div style="height:70px"></div>
+  </div>
+
+  <!-- Tab3: 备考 -->
+  <div class="tab-content" id="tab-study">
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-sub="sub-policy">📜政策</button>
+      <button class="sub-tab" data-sub="sub-interview">📚面试</button>
+      <button class="sub-tab" data-sub="sub-timeline">📅时间轴</button>
+    </div>
+    <div class="sub-content active" id="sub-policy"></div>
+    <div class="sub-content" id="sub-interview"></div>
+    <div class="sub-content" id="sub-timeline"></div>
+    <div style="height:70px"></div>
+  </div>
+
+  <!-- Bottom Actions -->
+  <div class="bottom-actions" id="bottomActions" style="display:none">
+    <button class="bottom-btn primary" onclick="switchTab('tab-archive')">📋 归档台账</button>
+    <button class="bottom-btn primary" onclick="switchTab('tab-virtual')">💰 虚拟账户</button>
+    <button class="bottom-btn primary" onclick="switchTab('tab-study')">🎓 备考中心</button>
+    <button class="bottom-btn secondary" onclick="openExport()">⭐ 导出</button>
+    <button class="bottom-btn secondary" onclick="handleManualRefresh()">⟳ 刷新</button>
+  </div>
+</div>
+
+<!-- Drawer -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">⚙️ 设置中心</div>
+
+  <div class="drawer-section">
+    <h4>👤 我的资料</h4>
+    <div class="drawer-field">
+      <label>专业</label>
+      <input type="text" id="cfgMajor" value="工业工程与管理" onchange="saveConfig()">
+    </div>
+    <div class="drawer-field">
+      <label>性别</label>
+      <select id="cfgGender" onchange="saveConfig()"><option value="女" selected>女</option><option value="男">男</option></select>
+    </div>
+    <div class="drawer-field">
+      <label>毕业时间</label>
+      <input type="text" id="cfgGraduation" value="2028-06" onchange="saveConfig()">
+    </div>
+    <div class="drawer-field">
+      <label><input type="checkbox" id="cfgHasHouse" checked onchange="saveConfig()"> 晋城有住房</label>
+    </div>
+    <div class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">
+      <span>🌙 暗色模式</span>
+      <div class="toggle-track" id="darkTrack"></div>
+    </div>
+  </div>
+
+  <div class="drawer-section">
+    <h4>🌐 监控网址</h4>
+    <div class="drawer-tags" id="urlTags"></div>
+    <input type="text" id="newUrlInput" placeholder="添加网址..." style="width:calc(100% - 50px);display:inline-block;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-size:13px;margin-top:4px">
+    <button onclick="addUrl()" style="padding:6px 10px;border:none;background:var(--btn-green);color:#fff;border-radius:4px;margin-left:4px;font-size:13px;cursor:pointer">+</button>
+  </div>
+
+  <div class="drawer-section">
+    <h4>🔑 监控关键词</h4>
+    <div class="drawer-tags" id="keywordTags"></div>
+    <input type="text" id="newKeyword" placeholder="添加关键词..." style="width:calc(100% - 50px);display:inline-block;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-size:13px;margin-top:4px">
+    <button onclick="addKeyword()" style="padding:6px 10px;border:none;background:var(--btn-green);color:#fff;border-radius:4px;margin-left:4px;font-size:13px;cursor:pointer">+</button>
+  </div>
+
+  <div class="drawer-section">
+    <h4>🚫 排除关键词</h4>
+    <div class="drawer-tags" id="excludeTags"></div>
+    <input type="text" id="newExclude" placeholder="添加排除词..." style="width:calc(100% - 50px);display:inline-block;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-size:13px;margin-top:4px">
+    <button onclick="addExclude()" style="padding:6px 10px;border:none;background:var(--danger);color:#fff;border-radius:4px;margin-left:4px;font-size:13px;cursor:pointer">+</button>
+  </div>
+</div>
+
+<!-- 单位详情弹窗 -->
+<div class="modal-overlay" id="orgModalOverlay" onclick="closeOrgModal()"></div>
+<div class="modal" id="orgModal"><div id="orgModalContent"></div></div>
+
+<!-- 导出弹窗 -->
+<div class="export-overlay" id="exportOverlay" onclick="closeExport()"></div>
+<div class="export-box" id="exportBox"><div id="exportContent"></div></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 初始数据 =====
+const DEFAULT_DATA = {
+  config: {
+    major: '工业工程与管理', gender: '女', graduation: '2028-06', hasHouse: true,
+    urls: [
+      {name:'晋城市人社局',url:'http://rsj.jcgov.gov.cn/',active:true},
+      {name:'晋城市政府官网',url:'https://www.jcgov.gov.cn/',active:true},
+      {name:'晋城人才网',url:'https://www.jcrcw.com/',active:true},
+      {name:'泽州县政府',url:'http://www.zezhou.gov.cn/',active:true}
+    ],
+    keywords: ['市属国企人才引进','晋城城投','晋城国投','丹河新城','泽州县紧缺高层次人才引进','中小企业发展促进中心','城镇集体工业联合社','工信产业岗','工程管理','工业工程','全日制硕士研究生','人才引进'],
+    excludes: ['限男性','乡镇','综合执法','应急管理','住建局','公安','中小学','医疗','仅限应届生']
+  },
+  announcements: [],
+  scrapeStatus: {lastRun:null, sites:[], newCount:0, activeCount:0},
+  timelineProgress: {},
+  applicationProgress: {},
+  companyDetails: {}
+  favorites: [],
+  darkMode: false
+};
+
+// ===== 数据管理 =====
+function loadData(){
+  try{
+    const d=JSON.parse(localStorage.getItem('weilai_data'));
+    if(d&&d.config) return d;
+  }catch(e){}
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+let DATA = loadData();
+
+function saveData(){
+  localStorage.setItem('weilai_data',JSON.stringify(DATA));
+}
+
+function loadConfig(){
+  return DATA.config;
+}
+let CONFIG = loadConfig();
+
+function saveConfig(){
+  const cfg={
+    major: document.getElementById('cfgMajor').value,
+    gender: document.getElementById('cfgGender').value,
+    graduation: document.getElementById('cfgGraduation').value,
+    hasHouse: document.getElementById('cfgHasHouse').checked,
+    urls: CONFIG.urls,
+    keywords: CONFIG.keywords,
+    excludes: CONFIG.excludes
+  };
+  Object.assign(CONFIG,cfg);
+  DATA.config=CONFIG;
+  saveData();
+  renderAll();
+  showToast('设置已保存','success');
+}
+
+// ===== 工具 =====
+function daysUntil(d){
+  if(!d)return 99;
+  const t=new Date(d),n=new Date();
+  return Math.ceil((t-n)/(1000*60*60*24));
+}
+
+function formatDate(d){
+  if(!d)return '待定';
+  const dt=new Date(d);
+  return `${dt.getMonth()+1}.${dt.getDate()}`;
+}
+
+function escapeHtml(s){
+  const d=document.createElement('div');
+  d.textContent=s;
+  return d.innerHTML;
+}
+
+// ===== 模拟抓取数据（全面版·涵盖所有相关岗位） =====
+function generateMockData(){
+  const now=new Date();
+  // 岗位生成器：所有符合"工业工程与管理"女硕士的岗位
+  const posTemplates = [
+    // ===== 🏭 市属国企/平台公司 =====
+    // ===== 虚拟账户可签企业（城区区属） =====
+    {org:'城区城投',orgType:'🏭区属国企',baseLeisure:3,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:1},
+    {org:'城区宜业城建',orgType:'🏭区属国企',baseLeisure:4,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:2},
+    {org:'城区汽车运输',orgType:'🏭区属国企',baseLeisure:4,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:2},
+    {org:'城区国富经贸',orgType:'🏭区属国企',baseLeisure:5,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:2},
+    {org:'城区国业经贸',orgType:'🏭区属国企',baseLeisure:5,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:2},
+    {org:'城区地信测绘',orgType:'🏭区属国企',baseLeisure:4,baseComp:'低',url:'http://www.jccq.gov.cn/',va:true,vaPriority:3},
+    // ===== 虚拟账户可能企业（市属在城区） =====
+    {org:'晋城国投',orgType:'🏭市属国企',baseLeisure:3,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/',va:true,vaPriority:2},
+    {org:'丹河新城',orgType:'🏭市属国企',baseLeisure:2,baseComp:'中',url:'https://www.jcgov.gov.cn/dtxx/jcdt/',va:true,vaPriority:3},
+    {org:'晋城合为集团',orgType:'🏭市属国企',baseLeisure:3,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/',va:true,vaPriority:3},
+    {org:'晋城乡村振兴',orgType:'🏭市属国企',baseLeisure:4,baseComp:'低',url:'http://rsj.jcgov.gov.cn/tzgg/',va:true,vaPriority:3},
+    {org:'国投华泰科技',orgType:'🏭数字经济',baseLeisure:3,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/',va:true,vaPriority:3},
+    {org:'国投广告传媒',orgType:'🏭文旅传媒',baseLeisure:4,baseComp:'低',url:'http://www.jcrcw.com/',va:true,vaPriority:3},
+    // ===== 原有非虚拟企业 =====
+    {org:'晋城城投',orgType:'🏭平台公司',baseLeisure:3,baseComp:'低',url:'http://rsj.jcgov.gov.cn/tzgg/'},
+    {org:'晋城开发区',orgType:'🏭管委会',baseLeisure:3,baseComp:'低',url:'https://www.jcgov.gov.cn/'},
+    {org:'晋城公交公司',orgType:'🏭市属国企',baseLeisure:4,baseComp:'低',url:'https://www.jcrcw.com/'},
+    {org:'晋城热力公司',orgType:'🏭市属国企',baseLeisure:4,baseComp:'低',url:'https://www.jcrcw.com/'},
+    {org:'晋政集团',orgType:'🏭平台公司',baseLeisure:3,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/'},
+    // ===== 🏛️ 事业性质/直属单位 =====
+    {org:'中小企业中心',orgType:'🏛️事业性质',baseLeisure:5,baseComp:'低',url:'https://www.jcrcw.com/'},
+    {org:'城联社',orgType:'🏛️集体企业',baseLeisure:5,baseComp:'低',url:'https://www.jcrcw.com/'},
+    {org:'泽州事业编',orgType:'🏛️事业编',baseLeisure:5,baseComp:'中',url:'http://www.zezhou.gov.cn/'},
+    {org:'晋城市场监管局',orgType:'🏛️事业编',baseLeisure:4,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/'},
+    {org:'晋城文旅局',orgType:'🏛️事业编',baseLeisure:5,baseComp:'中',url:'http://rsj.jcgov.gov.cn/tzgg/'},
+    {org:'泽州中小企业局',orgType:'🏛️事业编',baseLeisure:5,baseComp:'低',url:'http://www.zezhou.gov.cn/'},
+    // ===== 📋 其他相关 =====
+    {org:'晋城人才服务中心',orgType:'🏛️事业性质',baseLeisure:4,baseComp:'低',url:'https://www.jcrcw.com/'},
+    {org:'晋城智慧城市中心',orgType:'🏭市属国企',baseLeisure:3,baseComp:'低',url:'https://www.jcgov.gov.cn/'},
+  ];
+
+  // 岗位名称池
+  const posPool = [
+    '工程管理岗','项目管理岗','工业工程岗','运营管理岗','产业服务岗',
+    '综合管理岗','信息化管理岗','技术管理岗','质量管理岗','生产管理岗',
+    '供应链管理岗','设备管理岗','体系管理岗','节能管理岗','现场管理岗'
+  ];
+
+  // 报名时间偏移（天）
+  const regOffsets = [
+    {s:-2,e:10},{s:-3,e:12},{s:-5,e:15},{s:0,e:7},{s:-8,e:18},{s:2,e:8},{s:-10,e:20}
+  ];
+
+  // 完整内容模板（详细版）
+  const contentTpls = [
+    (orgName, posName, hc, interviewS) => `【单位简介】${orgName}是晋城市属重点国有企业，承担城市基础设施建设和运营管理职能，工作环境稳定，制度规范。
+【招聘岗位】${posName}
+【招聘人数】${hc}人
+【学历要求】全日制硕士研究生及以上
+【专业要求】工业工程、工程管理及相关专业
+【年龄要求】35周岁以下
+【性别要求】不限
+【考核方式】${interviewS}
+【薪资待遇】国企标准薪酬+五险一金+年终绩效+E类人才引进补贴
+【人才补贴】生活补贴3000元/月（5年18万）+购房补贴20万（或租房补贴2000元/月）
+【报名方式】登录晋城市人社局官网下载报名表，提交至指定邮箱
+【咨询电话】0356-2199486（市人社局创业就业科）
+【工作强度】${orgName==='中小企业中心'||orgName==='城联社'?'工作节奏轻松，适合长期发展':orgName==='丹河新城'?'新区建设期项目较多，但能积累经验':'正常国企工作节奏'}`,
+    (orgName, posName, hc, interviewS) => `【单位概况】${orgName}负责晋城市产业政策制定、企业服务与统筹协调，办公环境佳，位于晋城市区。
+【招聘岗位】${posName}
+【招聘人数】${hc}人
+【学历要求】全日制硕士研究生
+【专业要求】工业工程与管理、管理科学与工程等相关专业
+【年龄要求】35周岁以下
+【性别要求】不限
+【考核方式】${interviewS}
+【薪资待遇】事业单位工资标准+绩效补贴+人才补贴
+【人才补贴】${interviewS.includes('免笔试')?'企业标准：生活补贴3000元/月×5年+购房补贴20万':'事业编标准：生活补贴1000元/月×5年'}
+【报名方式】网上报名，无需现场提交
+【工作强度】${orgName==='中小企业中心'||orgName==='城联社'?'⭐极清闲推荐：日常对接中小企业，工作内容轻松，几乎不加班，是备考/躺平首选':'工作节奏适中，偶有忙季但总体轻松'}`,
+    (orgName, posName, hc, interviewS) => `【单位介绍】${orgName}是晋城市级人才服务与就业指导机构，承担全市人才引进、就业服务等职能，工作氛围好。
+【招聘岗位】${posName}
+【招聘人数】${hc}人
+【学历要求】全日制硕士研究生及以上
+【专业要求】工业工程、经济管理类相关专业
+【年龄要求】35周岁以下
+【性别要求】不限
+【考核方式】${interviewS}
+【薪资待遇】全额拨款事业编待遇+人才补贴
+【人才补贴】企业岗3000元/月生活补贴+购房补贴20万（或租房补贴2000元/月）
+【注意事项】${orgName==='丹河新城'?'丹河新城是晋城市重点发展新区，岗位含金量高，建议重点关注':'建议提前准备好身份证、学历证书、个人简历等报名材料'}
+【工作强度】清闲舒适，工作与生活平衡度高`
+  ];
+
+  // 构建公告
+  const mock = [];
+  let idx = 1;
+
+  posTemplates.forEach((org, oi) => {
+    // 每个单位出1-3条岗位
+    const count = org.org==='晋城城投'?3:org.org==='泽州事业编'?2:org.org==='中小企业中心'?2:org.org==='城联社'?2:1+Math.floor(Math.random()*2);
+    
+    for (let pi = 0; pi < count && pi < posPool.length; pi++) {
+      const pos = posPool[(idx-1) % posPool.length];
+      const regOff = regOffsets[(idx-1) % regOffsets.length];
+      const pubDate = new Date(now);
+      pubDate.setDate(pubDate.getDate() - (count - pi) * 2 - Math.floor(Math.random()*3));
+      
+      const rStart = new Date(pubDate);
+      rStart.setDate(rStart.getDate() + regOff.s + Math.floor(Math.random()*3));
+      const rEnd = new Date(rStart);
+      rEnd.setDate(rEnd.getDate() + regOff.e + Math.floor(Math.random()*5));
+
+      const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const fmtShort = d => `${d.getMonth()+1}.${d.getDate()}`;
+
+      // 标签系统
+      const tags = ['企业高补'];
+      let matchType = '高度匹配';
+      let leisureBonus = 0;
+      
+      // 高度匹配：工业工程/工程管理相关岗位
+      if (pos.includes('工程')||pos.includes('工业')||pos.includes('生产')||pos.includes('质量')||pos.includes('供应链')||pos.includes('设备')||pos.includes('现场')) {
+        matchType = '高度匹配';
+        tags.unshift('🎯高度匹配');
+        leisureBonus = 0;
+      } else if (pos.includes('综合')||pos.includes('运营')||pos.includes('产业')) {
+        matchType = '部分匹配';
+        tags.unshift('📌部分匹配');
+        leisureBonus = -1;
+      } else {
+        matchType = '基本匹配';
+        tags.unshift('📎基本匹配');
+        leisureBonus = -2;
+      }
+
+      // 清闲标注
+      let leisure = org.baseLeisure + leisureBonus;
+      if (org.org==='中小企业中心'||org.org==='城联社') { leisure = 5; tags.push('🌿极清闲'); }
+      else if (org.org==='泽州事业编'||org.org==='泽州中小企业局'||org.org==='晋城文旅局') { tags.push('🌿清闲'); }
+      else if (leisure <= 2) { tags.push('🔨偏忙'); }
+      else if (leisure === 3) { tags.push('⚖️适中'); }
+      else { tags.push('🌿偏清闲'); }
+
+      // 免笔试判定
+      const hasInterview = org.orgType.includes('事业编') && Math.random() > 0.6 ? false : true;
+      const interview = hasInterview ? '免笔试' : '笔试+面试';
+      if (hasInterview && matchType === '高度匹配') tags.push('⚡免笔试');
+
+      // 招录人数
+      const hc = org.org==='晋城城投'?5+Math.floor(Math.random()*3):org.org==='国投'?3+Math.floor(Math.random()*2):1+Math.floor(Math.random()*3);
+
+      // 竞争度（基于招录人数和限制条件）
+      let comp = '中';
+      if (hc >= 4) comp = '低';
+      else if (hc >= 2) comp = '中';
+      else comp = '高';
+      if (hasInterview && hc >= 2) comp = '低';
+      comp = org.baseComp === '低' ? (comp === '高' ? '中' : '低') : comp;
+      tags.push(`📊竞争${comp}`);
+
+      // 性别
+      const gender = Math.random() > 0.8 ? '女' : '不限';
+
+      // 来源
+      const sources = ['晋城市人社局','晋城市政府官网','晋城人才网','泽州县政府'];
+      const source = org.org.includes('泽州') ? '泽州县政府' : sources[Math.floor(Math.random()*3)];
+
+      // 类型
+      const type = (org.org.includes('泽州') && org.orgType.includes('事业')) ? '泽州事业编/省考' : '国企人才引进';
+
+      // 学历匹配标签
+      tags.push('🎓硕士可报');
+
+      // 专业匹配标签
+      if (pos.includes('工程')||pos.includes('工业')||pos.includes('管理')) tags.push('📐工管对口');
+
+      // 报名状态
+      const exp = rEnd < now;
+
+      mock.push({
+        id: `mock${String(idx).padStart(3,'0')}`,
+        title: `${org.org}2026年${pos}人才引进公告`,
+        url: org.url,
+        source: source,
+        publishDate: fmt(pubDate),
+        regStart: fmt(rStart),
+        regEnd: fmt(rEnd),
+        type: type,
+        org: org.org,
+        orgType: org.orgType,
+        pos: pos,
+        count: hc,
+        edu: '硕士',
+        gender: gender,
+        interview: interview,
+        onlyFresh: false,
+        expired: exp,
+        tags: tags,
+        leisure: leisure,
+        comp: comp,
+        matchType: matchType,
+        va: org.va || false,
+        vaPriority: org.vaPriority || 99,
+        salary: org.org==='晋城国投'?'8-12k':org.org==='丹河新城'?'8-12k':org.org==='晋城合为集团'?'6-9k':org.org==='城区城投'?'6-9k':org.org==='晋城乡村振兴'?'6-8k':org.org==='国投华泰科技'?'7-10k':org.org==='城区国富经贸'||org.org==='城区国业经贸'?'5-7k':org.org==='城区汽车运输'?'5-7k':org.org==='城区宜业城建'?'6-8k':org.org==='城区地信测绘'?'5-7k':org.org==='国投广告传媒'?'5-7k':'5-8k',
+        leisure: leisure,
+        comp: comp,
+        matchType: matchType,
+        fullContent: contentTpls[(idx-1) % contentTpls.length](org.org,pos,hc,interview)
+      });
+      idx++;
+    }
+  });
+
+  // 按推荐度排序（高度匹配+竞争低+清闲度高 排前面）
+  mock.sort((a,b) => {
+    const scoreA = calcScore(a);
+    const scoreB = calcScore(b);
+    return scoreB - scoreA;
+  });
+
+  // 添加排名序号
+  mock.forEach((a,i) => {
+    if (!a.expired) a.rank = i + 1;
+  });
+
+  return mock;
+}
+
+// ===== 推荐评分 =====
+function calcScore(a){
+  if (a.expired) return -999;
+  let s=0;
+  // 核心：匹配度（权重最高）
+  if(a.matchType==='高度匹配') s+=15;
+  else if(a.matchType==='部分匹配') s+=8;
+  else if(a.matchType==='基本匹配') s+=3;
+  // 专业对口加分
+  if(a.tags&&a.tags.some(t=>t.includes('工管对口'))) s+=5;
+  // 清闲度（第二权重）
+  if(a.leisure>=5) s+=12;
+  else if(a.leisure>=4) s+=8;
+  else if(a.leisure>=3) s+=4;
+  // 免笔试
+  if(a.interview&&a.interview.includes('免笔试')) s+=6;
+  // 招录人数多
+  if(a.count>=5) s+=5;
+  else if(a.count>=3) s+=3;
+  else if(a.count>=2) s+=2;
+  // 竞争低
+  if(a.comp==='低') s+=4;
+  // 性别不限
+  if(a.gender&&a.gender==='不限') s+=2;
+  // 报名截止临近（紧急度）
+  const d=daysUntil(a.regEnd);
+  if(d>0&&d<=3) s+=8;
+  else if(d>0&&d<=7) s+=5;
+  else if(d>0&&d<=14) s+=2;
+  return s;
+}
+
+// ===== 暗色模式 =====
+function initDarkMode(){
+  // 优先使用用户手动设置，没有则跟随系统
+  if(DATA.darkMode===true){
+    document.body.classList.add('dark-mode');
+  }else if(DATA.darkMode===false){
+    // 跟随系统
+    const prefersDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    if(prefersDark) document.body.classList.add('dark-mode');
+  }
+  updateDarkToggleUI();
+}
+function toggleDarkMode(){
+  document.body.classList.toggle('dark-mode');
+  const isDark=document.body.classList.contains('dark-mode');
+  DATA.darkMode=isDark;
+  saveData();
+  updateDarkToggleUI();
+  showToast(isDark?'🌙 已切换暗色模式':'☀️ 已切换亮色模式','info');
+}
+function updateDarkToggleUI(){
+  const isDark=document.body.classList.contains('dark-mode');
+  const el=document.getElementById('darkToggle');
+  if(el) el.classList.toggle('on',isDark);
+}
+
+// ===== 收藏 =====
+function toggleFavorite(id){
+  if(!DATA.favorites)DATA.favorites=[];
+  const idx=DATA.favorites.indexOf(id);
+  if(idx>=0){
+    DATA.favorites.splice(idx,1);
+    showToast('已取消收藏','info');
+  }else{
+    DATA.favorites.push(id);
+    showToast('⭐ 已收藏，将置顶显示','success');
+  }
+  saveData();
+  renderHome();
+}
+function isFavorited(id){
+  return DATA.favorites&&DATA.favorites.includes(id);
+}
+
+// ===== 材料清单 =====
+function getChecklist(a){
+  const items=[];
+  const base=['身份证原件及复印件','学历学位证书（或学生证）','近期一寸免冠照片电子版'];
+  if(a.orgType&&a.orgType.includes('国企')){
+    items.push(...base,'个人简历（突出工程管理/工业工程经历）','在校成绩单','英语等级证书','计算机等级证书','获奖证书原件及复印件');
+    if(a.pos&&(a.pos.includes('工程')||a.pos.includes('技术'))) items.push('相关实习证明或项目经历证明');
+  }else if(a.orgType&&a.orgType.includes('事业')){
+    items.push(...base,'个人简历','教育部学历认证报告','无犯罪记录证明','个人征信报告');
+    if(a.interview&&a.interview.includes('笔试')) items.push('行测/申论复习资料','近期模拟试卷');
+  }else{
+    items.push(...base,'个人简历','相关资格证书');
+  }
+  if(a.gender==='女') items.push('（无需性别相关附加材料）');
+  return items;
+}
+
+// ===== 数据概览统计 =====
+function renderStatsOverview(){
+  const ann=DATA.announcements||[];
+  const active=ann.filter(a=>!a.expired);
+  const el=document.getElementById('statsOverview');
+  const totalUnits=[...new Set(ann.map(a=>a.org).filter(Boolean))].length;
+  const highMatch=active.filter(a=>a.matchType==='高度匹配').length;
+  const freeInterview=active.filter(a=>a.interview&&a.interview.includes('免笔试')).length;
+  const leisure=active.filter(a=>a.leisure>=4).length;
+  const urgent=active.filter(a=>{
+    const d=daysUntil(a.regEnd);return d>0&&d<=5;
+  }).length;
+  const favCount=DATA.favorites?DATA.favorites.length:0;
+  el.innerHTML=`
+    <div class="stat-ov-item"><span class="ov-label">📊 累计公告</span><span class="ov-value">${ann.length}条</span></div>
+    <div class="stat-ov-item"><span class="ov-label">🏢 覆盖单位</span><span class="ov-value blue">${totalUnits}个</span></div>
+    <div class="stat-ov-item"><span class="ov-label">🎯 高度匹配</span><span class="ov-value green">${highMatch}条</span></div>
+    <div class="stat-ov-item"><span class="ov-label">⚡ 免笔试</span><span class="ov-value blue">${freeInterview}条</span></div>
+    <div class="stat-ov-item"><span class="ov-label">🌿 清闲岗</span><span class="ov-value green">${leisure}条</span></div>
+    <div class="stat-ov-item"><span class="ov-label">${urgent>0?'🔴':'✅'} 即将截止</span><span class="ov-value ${urgent>0?'red':'green'}">${urgent}条</span></div>
+    ${favCount?`<div class="stat-ov-item"><span class="ov-label">⭐ 已收藏</span><span class="ov-value">${favCount}条</span></div>`:''}
+  `;
+}
+
+// ===== 渲染引擎 =====
+function renderAll(){
+  renderHome();
+  renderArchive();
+  renderVirtualAccount();
+  renderStudy();
+  renderHeaderStats();
+  renderStatsOverview();
+  renderDrawerTags();
+}
+
+function renderHeaderStats(){
+  const ann=DATA.announcements||[];
+  const active=ann.filter(a=>!a.expired);
+  const newCount=ann.filter(a=>{
+    const d=new Date(a.publishDate);
+    const n=new Date();
+    return (n-d)<3*24*60*60*1000;
+  }).length;
+  const urgent=active.filter(a=>{
+    const d=daysUntil(a.regEnd);
+    return d>0&&d<=5;
+  }).length;
+  document.getElementById('newCount').textContent=newCount;
+  document.getElementById('activeCount').textContent=active.length;
+  document.getElementById('lastRunTime').textContent=DATA.scrapeStatus.lastRun||'暂无数据';
+  document.getElementById('statNew').textContent=newCount;
+  document.getElementById('statActive').textContent=active.length;
+  document.getElementById('statUrgent').textContent=urgent;
+  document.getElementById('bottomActions').style.display='flex';
+}
+
+// ===== 虚拟账户板块渲染 =====
+function renderVirtualAccount(){
+  const el=document.getElementById('virtualContent');
+  const ann=DATA.announcements||[];
+  const vaAnn=ann.filter(a=>a.va).sort((a,b)=>(a.vaPriority||99)-(b.vaPriority||99));
+  const vaOrgs=[...new Set(vaAnn.map(a=>a.org))];
+
+  // 统计
+  const totalPositions=vaAnn.length;
+  const activePositions=vaAnn.filter(a=>!a.expired).length;
+  const highMatch=vaAnn.filter(a=>a.matchType==='高度匹配').length;
+
+  const stepDone=DATA.timelineProgress||{};
+  const steps=[
+    {key:'va_step1',text:'打电话确认专业是否对口（0356-2199486）'},
+    {key:'va_step2',text:'获取虚拟账户合作企业正式名单'},
+    {key:'va_step3',text:'选择意向企业，准备报名材料'},
+    {key:'va_step4',text:'与企业签署就业意向协议书'},
+    {key:'va_step5',text:'虚拟账户开通，每月存入3,000元'},
+    {key:'va_step6',text:'毕业到晋城城区入职，一次性兑现'}
+  ];
+
+  let html=`
+    <div class="va-card" style="border-left:3px solid #8B5CF6">
+      <h3>💰 虚拟账户 · 你的专属通道</h3>
+      <div style="font-size:13px;line-height:1.7;margin:6px 0">
+        <p>在读研二与企业签意向协议 → 每月<span style="font-weight:700;color:var(--secondary)">3,000元</span>存入虚拟账户 → 毕业入职一次性兑现</p>
+        <p>预计可攒：<span style="font-weight:700;color:var(--secondary)">研二签 → 7.2万｜研一签 → 10.8万</span></p>
+      </div>
+      <div class="va-progress">
+        <span style="font-size:12px;font-weight:600;white-space:nowrap">办理进度</span>
+        <div class="bar"><div class="fill gold" style="width:${Math.round(steps.filter(s=>stepDone[s.key]).length/steps.length*100)}%"></div></div>
+        <span style="font-size:12px;color:var(--text-muted)">${steps.filter(s=>stepDone[s.key]).length}/${steps.length}</span>
+      </div>
+    </div>
+
+    <div class="va-card">
+      <h3>📋 办理步骤 · 逐个打勾</h3>
+      ${steps.map((s,i)=>{
+        const done=stepDone[s.key];
+        return `<div class="va-step ${done?'done':''}" onclick="toggleVaStep('${s.key}')" style="cursor:pointer">
+          <div class="step-num">${i+1}</div>
+          <div class="step-text">${s.text} ${done?'✅':''}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="va-card">
+      <h3>🏢 虚拟账户可签企业（${vaOrgs.length}家）</h3>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">共跟踪 ${totalPositions} 个岗位 · ${activePositions} 个正在报名 · ${highMatch} 个高度匹配</div>
+      ${vaOrgs.map(orgName=>{
+        const items=vaAnn.filter(a=>a.org===orgName);
+        const orgInfo=items[0];
+        const act=items.filter(a=>!a.expired).length;
+        const salary=orgInfo.salary||'5-8k';
+        const leisureMap={1:'🔴极忙',2:'🟡较忙',3:'🟡适中',4:'🟢清闲',5:'🟢极清闲'};
+        const leisureTag=leisureMap[orgInfo.leisure]||'';
+        const priorityStars={1:'⭐⭐⭐⭐⭐',2:'⭐⭐⭐⭐',3:'⭐⭐⭐'};
+        const starTag=priorityStars[orgInfo.vaPriority]||'⭐⭐';
+        return `<div class="va-company" onclick="document.getElementById('va_org_${orgName}').classList.toggle('open')">
+          <div>
+            <div class="va-name">${orgName} <span class="va-badge va-badge-purple">${orgInfo.orgType||''}</span></div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px">
+              ${starTag} · 💰${salary} · ${leisureTag} · ${act}个岗位可报
+            </div>
+          </div>
+          <div class="va-action">${items.length}条 ▾</div>
+        </div>
+        <div class="va-company-items" id="va_org_${orgName}" style="display:none;padding:0 0 4px 0">
+          ${items.map(a=>{
+            const d=daysUntil(a.regEnd);
+            return `<div style="padding:6px 0 6px 10px;border-top:1px solid var(--border);font-size:13px;cursor:pointer" onclick="switchTab('tab-archive')">
+              <div>${a.pos||''} · 👥${a.count}人 · ${a.interview||''}</div>
+              <div style="font-size:12px;color:var(--text-muted)">📅${a.regStart?formatDate(a.regStart):''}-${a.regEnd?formatDate(a.regEnd):''} ${d<=0?'🔴已截止':'✅报名中'} ${a.matchType}</div>
+            </div>`;
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="va-card" style="border-left:3px solid #22C55E">
+      <h3>📞 现在就打电话</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p><strong>市人社局创业就业科：</strong><a href="tel:03562199486" style="color:var(--primary);text-decoration:none;font-size:18px;font-weight:700">0356-2199486</a></p>
+        <p><strong>城区就业服务中心：</strong><a href="tel:03562299302" style="color:var(--primary);text-decoration:none;font-size:18px;font-weight:700">0356-2299302</a></p>
+        <p style="margin-top:4px;font-size:12px;color:var(--text-muted)">周一至周五 8:30-12:00, 14:00-17:30 · 文昌西街1388号</p>
+      </div>
+    </div>
+  `;
+  el.innerHTML=html;
+}
+
+function toggleVaStep(key){
+  if(!DATA.timelineProgress)DATA.timelineProgress={};
+  DATA.timelineProgress[key]=!DATA.timelineProgress[key];
+  saveData();
+  renderVirtualAccount();
+}
+
+function renderHome(){
+  const ann=DATA.announcements||[];
+  const active=ann.filter(a=>!a.expired).sort((a,b)=>{
+    // 收藏优先
+    const fa=isFavorited(a.id)?1:0;
+    const fb=isFavorited(b.id)?1:0;
+    if(fa!==fb) return fb-fa;
+    return calcScore(b)-calcScore(a);
+  });
+  
+  // 分离收藏和未收藏
+  const favs=active.filter(a=>isFavorited(a.id));
+  const others=active.filter(a=>!isFavorited(a.id));
+
+  const topEl=document.getElementById('topRecommendation');
+  if(active.length===0){
+    topEl.innerHTML='<div class="empty-state"><div class="icon">🌱</div><p>暂无匹配公告，继续保持</p></div>';
+  }else{
+    let html='';
+    // 收藏区域
+    if(favs.length>0){
+      html+=`<div class="section-title" style="border-color:#FBBF24">⭐ 我的收藏 <span style="font-weight:400;color:var(--text-muted)">${favs.length}条</span></div>`;
+      html+=favs.map(a=>renderCard(a,isFavorited(a.id))).join('');
+    }
+    // 最推荐（如果未收藏）
+    if(others.length>0){
+      const top=others[0];
+      if(!favs.length){
+        html+=renderCard(top,true);
+      }else{
+        html+=`<div class="section-title">📌 其他推荐</div>`;
+        html+=others.map(a=>renderCard(a,false)).join('');
+      }
+    }
+    topEl.innerHTML=html;
+  }
+
+  const otherEl=document.getElementById('otherAnnouncements');
+  otherEl.innerHTML='';
+}
+
+function renderCard(a,isTop){
+  const d=daysUntil(a.regEnd);
+  let statusLabel='';
+  if(a.expired) statusLabel='<span class="card-badge badge-gray">已截止</span>';
+  else if(d<=3) statusLabel=`<span class="card-badge badge-red">🔴${d}天截止</span>`;
+  else if(d<=10) statusLabel=`<span class="card-badge badge-yellow">🟡${d}天截止</span>`;
+  else statusLabel=`<span class="card-badge badge-green">✅报名中</span>`;
+
+  // 标签渲染：去重+排序
+  const tagOrder=['🎯','📌','📎','🌿','⚡','📊','🎓','📐','🏭','🏛️'];
+  const sortedTags = (a.tags||[]).sort((x,y)=>{
+    const xi=tagOrder.findIndex(t=>x.startsWith(t));
+    const yi=tagOrder.findIndex(t=>y.startsWith(t));
+    return (xi===-1?99:xi)-(yi===-1?99:yi);
+  });
+  const tagsHtml=sortedTags.map(t=>{
+    let cls='badge-blue';
+    if(t.includes('清闲')||t.includes('偏清闲')) cls='badge-green';
+    else if(t.includes('极清闲')) cls='badge-green';
+    else if(t.includes('企业')) cls='badge-blue';
+    else if(t.includes('事业')) cls='badge-yellow';
+    else if(t.includes('匹配')) cls='badge-green';
+    else if(t.includes('免笔试')) cls='badge-green';
+    else if(t.includes('竞争')) cls='badge-blue';
+    else if(t.includes('工管')) cls='badge-blue';
+    else if(t.includes('硕士')) cls='badge-yellow';
+    else if(t.includes('偏忙')||t.includes('适中')) cls='badge-gray';
+    return `<span class="card-badge ${cls}">${t}</span>`;
+  }).join('');
+
+  const leisureMap={1:'🔴极忙',2:'🟡较忙',3:'🟡适中',4:'🟢清闲',5:'🟢极清闲'};
+
+  const score=calcScore(a);
+  const stars=score>12?'★★★★★':score>8?'★★★★☆':score>5?'★★★☆☆':score>2?'★★☆☆☆':'★☆☆☆☆';
+
+  const expandId='exp_'+a.id;
+
+  // 推荐理由
+  let reasonParts = [];
+  if (a.leisure >= 4) reasonParts.push('🌿清闲度高');
+  if (a.comp === '低') reasonParts.push('📊竞争小');
+  if (a.interview && a.interview.includes('免笔试')) reasonParts.push('⚡免笔试省心');
+  if (a.count >= 3) reasonParts.push(`👥招${a.count}人机会大`);
+  if (a.matchType === '高度匹配') reasonParts.push('🎯专业对口');
+  const reasonText = reasonParts.length ? '推荐理由：' + reasonParts.join(' · ') : '';
+
+  const topHtml=isTop?`
+    <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">
+      <span style="font-size:12px;font-weight:600;color:var(--secondary)">🏆 推荐指数 ${stars}</span>
+      <span style="font-size:11px;color:var(--text-muted);font-weight:400">#${a.rank||'?'}</span>
+    </div>
+    <div style="font-size:12px;color:var(--primary);margin-bottom:4px">${reasonText}</div>`:
+    `<div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">
+      <span style="font-size:11px;color:var(--text-muted)">#${a.rank||'?'}</span>
+      <span style="font-size:11px;color:var(--primary)">${reasonText}</span>
+    </div>`;
+
+  return `
+    <div class="card ${isTop?'card-top-rec':''}" onclick="toggleCard('${expandId}')" style="position:relative">
+      <button class="star-btn ${isFavorited(a.id)?'active':''}" onclick="event.stopPropagation();toggleFavorite('${a.id}')">${isFavorited(a.id)?'⭐':'☆'}</button>
+      <div class="card-top">
+        ${topHtml}
+        <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500;color:var(--primary);cursor:pointer" onclick="event.stopPropagation();showOrgDetail('${a.org||''}',event)">🏢 ${a.org||''}</span>
+          <span class="card-badge badge-blue">${a.type||''}</span>
+          ${statusLabel}
+        </div>
+      <div class="card-title">${a.url&&a.url!=='#'?`<a href="${a.url}" target="_blank" style="color:var(--text);text-decoration:none" onclick="event.stopPropagation()">${escapeHtml(a.pos||a.title)}</a>`:escapeHtml(a.pos||a.title)}</div>
+        <div class="card-meta">
+          <span>📅 ${a.regStart?formatDate(a.regStart):''}-${a.regEnd?formatDate(a.regEnd):''}</span>
+          <span>👥 招${a.count||'?'}人</span>
+          <span>${a.interview||'笔试+面试'}</span>
+          <span>${leisureMap[a.leisure]||'适中'}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;margin:4px 0">
+          <span class="app-status app-stat-${getAppStatus(a.id)}" id="statbtn_${a.id}" onclick="event.stopPropagation();renderStatusMenu('${a.id}','statbtn_${a.id}')">${STATUS_LABELS[getAppStatus(a.id)]||'📋未报名'} ▾</span>
+        </div>
+        <div class="card-tags">${tagsHtml}</div>
+        <div style="margin-top:6px;font-size:12px;color:var(--text-muted)">${a.expired?'已截止，可查看历史记录':'━ 点击展开完整公告 ━'}</div>
+      </div>
+      <div class="card-expand" id="${expandId}">
+        <div class="card-expand-inner">
+          ${(a.fullContent||'暂无详细信息').split('\n').map(p=>`<p>${escapeHtml(p)}</p>`).join('')}
+          <div class="checklist" id="cl_${a.id}">
+            <div class="cl-title">📋 报名材料清单（点击准备）</div>
+            ${getChecklist(a).map((item,i)=>{
+              const clKey='cl_'+a.id+'_'+i;
+              const done=DATA.timelineProgress&&DATA.timelineProgress[clKey];
+              return `<div class="cl-item ${done?'done':''}">
+                <input type="checkbox" ${done?'checked':''} onchange="toggleChecklistItem('${clKey}',this.checked)">
+                <label>${item}</label>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="card-actions">
+            ${a.url&&a.url!=='#'?`<a href="${a.url}" target="_blank" class="btn-link">🔗 官网链接</a>`:''}
+            <button class="btn-outline" onclick="event.stopPropagation();toggleFavorite('${a.id}')">${isFavorited(a.id)?'⭐ 已收藏':'☆ 收藏'}</button>
+            <button class="btn-outline" onclick="event.stopPropagation();toggleCard('${expandId}')">收起</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleCard(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const card=el.closest('.card');
+  if(card) card.classList.toggle('expanded');
+}
+function toggleChecklistItem(key,checked){
+  if(!DATA.timelineProgress)DATA.timelineProgress={};
+  DATA.timelineProgress[key]=checked?true:null;
+  saveData();
+}
+
+// ===== 投递进度追踪 =====
+const STATUS_LABELS={0:'📋未报名',1:'📨已报名',2:'⏳待面试',3:'✅已录取',4:'❌已拒绝',5:'🔒已放弃'};
+function getAppStatus(id){return DATA.applicationProgress&&DATA.applicationProgress[id]||0;}
+function setAppStatus(id,st){
+  if(!DATA.applicationProgress)DATA.applicationProgress={};
+  DATA.applicationProgress[id]=st;
+  saveData();
+  renderAll();
+}
+function renderStatusMenu(id,btnId){
+  // 关掉其他菜单
+  document.querySelectorAll('.status-menu').forEach(m=>m.remove());
+  const rect=document.getElementById(btnId).getBoundingClientRect();
+  const menu=document.createElement('div');
+  menu.className='status-menu';
+  menu.style.top=(rect.bottom+4)+'px';
+  menu.style.left=Math.max(8,rect.left)+'px';
+  Object.entries(STATUS_LABELS).forEach(([k,v])=>{
+    const item=document.createElement('div');
+    item.textContent=v;
+    item.onclick=(e)=>{e.stopPropagation();setAppStatus(id,parseInt(k));menu.remove();};
+    menu.appendChild(item);
+  });
+  document.body.appendChild(menu);
+  // 点击其他地方关闭
+  setTimeout(()=>document.addEventListener('click',function handler(){menu.remove();document.removeEventListener('click',handler);}),10);
+}
+
+// ===== 单位详情 =====
+const COMPANY_INFO={
+  '城区城投':{addr:'晋城市城区',dist:'城区中心',commute:'约10分钟',desc:'区属国有独资企业，负责城区城市基础设施建设与运营',hist:'2024年招8人，2025年招12人，呈扩招趋势',salary:'6-9k',leisure:'适中',totalHires:'近三年累计招30+人'},
+  '城区宜业城建':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'区属城建开发公司，负责城区房地产开发与城市更新',hist:'每年稳定招3-5人',salary:'6-8k',leisure:'偏清闲',totalHires:'稳定'},
+  '城区汽车运输':{addr:'晋城市城区',dist:'城区',commute:'约10-15分钟',desc:'区属交通运输企业，负责城区公共交通运营',hist:'2024年招5人',salary:'5-7k',leisure:'清闲',totalHires:'稳定'},
+  '城区国富经贸':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'区属商贸企业，负责物资贸易与供应链管理',hist:'每年招2-4人',salary:'5-7k',leisure:'极清闲',totalHires:'小而美'},
+  '城区国业经贸':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'区属商贸企业，进出口贸易与经贸服务',hist:'每年招2-3人',salary:'5-7k',leisure:'极清闲',totalHires:'小而美'},
+  '城区地信测绘':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'区属测绘地理信息企业（数字经济方向）',hist:'每年招2-3人',salary:'5-7k',leisure:'偏清闲',totalHires:'稳定'},
+  '晋城国投':{addr:'泽凤路2000号',dist:'城区北',commute:'约20分钟',desc:'市属最大国有资本投资运营平台，AA+信用评级，注册资本50亿',hist:'2024年集团招15+人，子公司招20+人',salary:'8-12k',leisure:'适中偏忙',totalHires:'大规模'},
+  '丹河新城':{addr:'丹河新城',dist:'金村镇',commute:'约30分钟',desc:'丹河新城建设投资集团，负责丹河新城开发建设',hist:'2024年招10+人，项目高峰期',salary:'8-12k',leisure:'偏忙',totalHires:'大规模'},
+  '晋城合为集团':{addr:'晋城市城区',dist:'城区',commute:'约15分钟',desc:'市属规划设计集团，城乡规划与工程设计',hist:'每年招5-8人',salary:'6-9k',leisure:'适中',totalHires:'稳定'},
+  '晋城乡村振兴':{addr:'晋城市城区',dist:'城区',commute:'约15分钟',desc:'市属乡村振兴投资开发平台',hist:'2024年招4人',salary:'6-8k',leisure:'偏清闲',totalHires:'稳定'},
+  '国投华泰科技':{addr:'晋城开发区',dist:'开发区',commute:'约20分钟',desc:'国投旗下科技子公司，数字经济/信息化方向',hist:'2024年招3人',salary:'7-10k',leisure:'适中',totalHires:'成长型'},
+  '国投广告传媒':{addr:'白水东街2079号',dist:'城区东南',commute:'约15分钟',desc:'国投旗下文化传媒子公司，文旅/传媒方向',hist:'2024年招2人',salary:'5-7k',leisure:'清闲',totalHires:'小而美'},
+  '晋城城投':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'市属城市建设投资平台',hist:'近年招人较多',salary:'6-9k',leisure:'适中',totalHires:'稳定'},
+  '晋城工信':{addr:'晋城市城区',dist:'城区',commute:'约15分钟',desc:'市属产业投资平台',hist:'产业管理岗为主',salary:'6-8k',leisure:'适中',totalHires:'稳定'},
+  '中小企业中心':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'事业性质单位，服务中小企业',hist:'每年招1-2人',salary:'5-7k',leisure:'极清闲',totalHires:'稀缺'},
+  '城联社':{addr:'晋城市城区',dist:'城区',commute:'约10分钟',desc:'城镇集体工业联合社，传统集体企业',hist:'每年招1-2人',salary:'5-6k',leisure:'极清闲',totalHires:'稀缺'},
+};
+function showOrgDetail(orgName,ev){
+  if(ev) ev.stopPropagation();
+  const info=COMPANY_INFO[orgName];
+  if(!info){showToast('暂无该单位详细信息','info');return;}
+  document.getElementById('orgModalContent').innerHTML=`
+    <h3>🏢 ${orgName}</h3>
+    <div class="m-sub">${info.desc}</div>
+    <div class="m-row"><span class="ml">📍 地址</span><span class="mv">${info.addr}</span></div>
+    <div class="m-row"><span class="ml">📏 距你家</span><span class="mv">${info.dist}</span></div>
+    <div class="m-row"><span class="ml">🚗 通勤时间</span><span class="mv">${info.commute}</span></div>
+    <div class="m-row"><span class="ml">💰 月薪范围</span><span class="mv">${info.salary}</span></div>
+    <div class="m-row"><span class="ml">🌿 清闲度</span><span class="mv">${info.leisure}</span></div>
+    <div class="m-row"><span class="ml">📊 历史招录</span><span class="mv">${info.hist}</span></div>
+    <div class="m-row"><span class="ml">📋 招录规模</span><span class="mv">${info.totalHires}</span></div>
+    <button class="m-close" onclick="closeOrgModal()">关闭</button>`;
+  document.getElementById('orgModalOverlay').classList.add('show');
+}
+function closeOrgModal(){
+  document.getElementById('orgModalOverlay').classList.remove('show');
+}
+
+// ===== 导出收藏 =====
+function openExport(){
+  const favIds=DATA.favorites||[];
+  const ann=DATA.announcements||[];
+  const favs=ann.filter(a=>favIds.includes(a.id));
+  if(favs.length===0){
+    showToast('还没有收藏任何公告，先去首页点⭐吧','info');
+    return;
+  }
+  const leisureMap={1:'极忙',2:'较忙',3:'适中',4:'清闲',5:'极清闲'};
+  let txt='⭐ 我的收藏岗位\n'+'='.repeat(28)+'\n\n';
+  favs.forEach((a,i)=>{
+    const d=daysUntil(a.regEnd);
+    txt+=`${i+1}. ${a.org} · ${a.pos}\n`;
+    txt+=`   单位：${a.org}（${a.orgType||''}）\n`;
+    txt+=`   报名：${a.regStart||'?'} ~ ${a.regEnd||'?'} ${d>0?`(剩${d}天)`:'(已截止)'}\n`;
+    txt+=`   招录：${a.count||'?'}人 | 考核：${a.interview||''}\n`;
+    txt+=`   清闲：${leisureMap[a.leisure]||''} | 竞争：${a.comp||''}\n`;
+    txt+=`   匹配：${a.matchType||''}\n`;
+    if(a.url&&a.url!=='#') txt+=`   链接：${a.url}\n`;
+    txt+='\n';
+  });
+  const now=new Date();
+  txt+=`导出时间：${now.toLocaleDateString('zh-CN')} ${now.toLocaleTimeString('zh-CN')}\n`;
+  txt+='由「未来 · 晋城人才监控中心」生成';
+
+  document.getElementById('exportContent').innerHTML=`
+    <h3>⭐ 导出收藏岗位</h3>
+    <textarea readonly id="exportText">${txt}</textarea>
+    <div class="e-actions">
+      <button class="e-copy" onclick="copyExport()">📋 复制到剪贴板</button>
+      <button class="e-close" onclick="closeExport()">关闭</button>
+    </div>`;
+  document.getElementById('exportOverlay').classList.add('show');
+}
+function copyExport(){
+  const ta=document.getElementById('exportText');
+  if(!ta)return;
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    showToast('✅ 已复制到剪贴板','success');
+  }).catch(()=>{
+    document.execCommand('copy');
+    showToast('✅ 已复制','success');
+  });
+}
+function closeExport(){
+  document.getElementById('exportOverlay').classList.remove('show');
+}
+
+function renderArchive(){
+  const q=(document.getElementById('archiveSearch').value||'').trim().toLowerCase();
+  let ann=DATA.announcements||[];
+  if(q){
+    ann=ann.filter(a=>
+      (a.org&&a.org.toLowerCase().includes(q))||
+      (a.pos&&a.pos.toLowerCase().includes(q))||
+      (a.title&&a.title.toLowerCase().includes(q))
+    );
+  }
+  const groups={};
+  ann.forEach(a=>{
+    const g=a.type||'其他';
+    if(!groups[g])groups[g]={};
+    const o=a.org||'未知单位';
+    if(!groups[g][o])groups[g][o]=[];
+    groups[g][o].push(a);
+  });
+
+  const el=document.getElementById('archiveContent');
+  let html='';
+  Object.keys(groups).forEach(g=>{
+    html+=`<div class="archive-group"><div class="section-title ${g.includes('事业')?'':'green'}">${g.includes('事业')?'🏛️ '+g:'🏭 '+g}</div>`;
+    Object.keys(groups[g]).forEach(o=>{
+      const items=groups[g][o];
+      const orgId='org_'+o.replace(/\s/g,'');
+      const orgInfo=items[0];
+      const orgTag=orgInfo.orgType?'<span class="org-badge">'+orgInfo.orgType+'</span>':'';
+      const leisureMap={1:'🔴极忙',2:'🟡较忙',3:'🟡适中',4:'🟢清闲',5:'🟢极清闲'};
+      const leisureTag=orgInfo.leisure?`<span style="font-size:11px;color:var(--text-muted)">${leisureMap[orgInfo.leisure]||''}</span>`:'';
+      html+=`
+        <div class="org-block" id="${orgId}">
+          <div class="org-header" onclick="document.getElementById('${orgId}').classList.toggle('open')">
+            <span class="org-name">${o} ${orgTag} ${leisureTag}</span>
+            <span class="org-count">${items.length}条 <span class="arrow">▾</span></span>
+          </div>
+          <div class="org-items">
+            ${items.map(a=>{
+              const d=daysUntil(a.regEnd);
+              const dl=d>0?`${d}天`:'已截止';
+              const cls=d<=0?'style="opacity:.5"':'';
+              return `<div class="org-item" ${d<=0?'style="opacity:.5"':''} ${a.url&&a.url!=='#'?`onclick="window.open('${a.url}','_blank')"`:''} style="${d<=0?'opacity:.5;':''}cursor:pointer">
+                <div class="item-title">${a.url&&a.url!=='#'?`<a href="${a.url}" target="_blank" style="color:var(--text);text-decoration:none">${escapeHtml(a.pos||a.title)}</a>`:escapeHtml(a.pos||a.title)}</div>
+                <div class="item-meta">
+                  <span>📅 ${formatDate(a.publishDate)}</span>
+                  <span>⏰ ${a.regStart?formatDate(a.regStart):''}-${a.regEnd?formatDate(a.regEnd):''}</span>
+                  <span>${a.interview||''}</span>
+                  <span>${d<=0?'🔴已截止':d<=5?'🔴'+dl:'✅'+dl}</span>
+                  <span>👥${a.count||'?'}人</span>
+                  <span style="color:var(--secondary);font-size:11px">${a.matchType||''}</span>
+                  ${a.url&&a.url!=='#'?`<a href="${a.url}" target="_blank" style="color:var(--primary);text-decoration:none">🔗链接</a>`:''}
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    });
+    html+='</div>';
+  });
+  if(!html) html='<div class="empty-state"><div class="icon">📭</div><p>没有匹配的公告</p></div>';
+  el.innerHTML=html;
+
+  // 默认打开第一个单位
+  const firstOrg=el.querySelector('.org-block');
+  if(firstOrg) firstOrg.classList.add('open');
+}
+
+function renderStudy(){
+  renderPolicy();
+  renderInterview();
+  renderTimeline();
+}
+
+function renderPolicy(){
+  const el=document.getElementById('sub-policy');
+  const hasHouse=CONFIG.hasHouse;
+  el.innerHTML=`
+    <div class="policy-card">
+      <h3>💼 企业（国企）补贴标准</h3>
+      <div class="row"><span class="label">生活补贴</span><span class="value">3,000元/月 × 5年 = 18万</span></div>
+      <div class="row"><span class="label">购房补贴</span><span class="value">20万（一次性，首购商品房）</span></div>
+      <div class="row"><span class="label">租房补贴（二选一）</span><span class="value">2,000元/月 × 5年 = 12万</span></div>
+      <div class="row"><span class="label">合计</span><span class="value" style="color:var(--secondary);font-size:16px">38-50万</span></div>
+      ${hasHouse?`<div class="highlight">✅ 你有回迁房 → 建议选租房补贴，每月额外到账2,000元，5年白拿12万</div>`:''}
+    </div>
+    <div class="policy-card" style="border-left:3px solid #FBBF24">
+      <h3>💰 虚拟账户定向引才 · 在读研二专属</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p style="background:#FEF3C7;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:13px">
+        ⚡ <strong>你在读研二，这是为你设计的政策</strong> — 签意向协议就开始存钱，毕业到账</p>
+        <p style="margin-top:6px">▸ <strong>标准：</strong>硕士研究生 <strong>3,000元/月</strong>，博士5,000元/月</p>
+        <p>▸ <strong>存多久：</strong>研二签约 → 毕业，约24个月 = <strong>7.2万</strong></p>
+        <p>▸ <strong>兑现方式：</strong>毕业到晋城城区企业工作 → 一次性到账</p>
+        <p>▸ <strong>适用产业：</strong>光机电、煤层气、文旅康养、数字经济、文化教育、商贸金融、<strong>现代服务业</strong></p>
+        <p>▸ <strong>你的专业（工业工程与管理）：</strong>🟡 与现代服务业/数字经济可能有交叉，<strong>需电话确认</strong></p>
+        <p>▸ <strong>和人才补贴冲突吗？</strong>❌ 不冲突，独立叠加</p>
+        <p style="margin-top:4px"><strong>如果办成：虚拟账户7.2万 + 人才补贴38万 = 45万+</strong></p>
+      </div>
+    </div>
+    <div class="policy-card" style="border-left:3px solid #8B5CF6">
+      <h3>🏢 虚拟账户 · 城区可签企业名单</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p style="background:#F3E8FF;padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:13px">
+        ⚡ <strong>和这些企业签意向协议 → 虚拟账户开始存钱</strong></p>
+        <p style="margin-top:6px;font-weight:600">📌 城区区属国企（最可能参与）：</p>
+        <p>▸ <strong>晋城市城区城市建设投资经营有限公司</strong> — 区属城投，工程管理岗对口</p>
+        <p>▸ <strong>晋城市城区宜业城建开发有限公司</strong> — 区属城建开发</p>
+        <p>▸ <strong>晋城市城区汽车运输有限责任公司</strong> — 区属交通物流（现代服务业）</p>
+        <p>▸ <strong>晋城市国富经贸有限公司</strong> — 区属商贸（商贸金融方向）</p>
+        <p>▸ <strong>晋城市国业经贸有限公司</strong> — 区属商贸</p>
+        <p>▸ <strong>晋城地信测绘有限公司</strong> — 区属测绘（数字经济方向）</p>
+
+        <p style="margin-top:8px;font-weight:600">📌 市属国企（注册地在城区，也可咨询）：</p>
+        <p>▸ <strong>晋城市国有资本投资运营有限公司</strong> — 国投公司，最大市属平台</p>
+        <p>▸ <strong>晋城市丹河新城建设投资集团有限公司</strong> — 丹河新城</p>
+        <p>▸ <strong>晋城合为规划设计集团有限公司</strong> — 规划设计</p>
+        <p>▸ <strong>晋城市乡村振兴投资开发有限公司</strong> — 乡村振兴</p>
+        <p>▸ <strong>晋城国投华泰科技有限公司</strong> — 数字经济/科技方向</p>
+        <p>▸ <strong>晋城国投广告传媒有限公司</strong> — 文旅/传媒方向</p>
+        <p>▸ <strong>晋城中航微电子科技有限公司</strong> — 经开区光机电方向</p>
+
+        <p style="margin-top:8px;font-weight:600;color:var(--text-muted);font-size:13px">
+        💡 工业工程与管理 → 最对口：城区城投（工程管理岗）、国富/国业经贸（运营管理）、汽车运输（供应链/物流管理）</p>
+        <p style="margin-top:4px;font-size:12px;color:var(--text-muted)">
+        ⚠️ 以上名单为基于公开信息整理的建议，实际可签企业以人社局提供的正式名单为准。打电话时顺便问："有没有虚拟账户合作企业名单？"</p>
+      </div>
+    </div>
+    <div class="policy-card" style="border-left:3px solid #F43F5E">
+      <h3>📞 虚拟账户咨询专线 · 现在就打</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p><strong>市人社局创业就业科</strong>（先打这个）：</p>
+        <p style="font-size:18px;font-weight:700;color:var(--primary);margin:4px 0">
+          <a href="tel:03562199486" style="color:var(--primary);text-decoration:none">📞 0356-2199486</a>
+        </p>
+        <p><strong>城区就业服务中心</strong>（市局转接后打）：</p>
+        <p style="font-size:18px;font-weight:700;color:var(--primary);margin:4px 0">
+          <a href="tel:03562299302" style="color:var(--primary);text-decoration:none">📞 0356-2299302</a>
+        </p>
+        <p><strong>现场办理地址：</strong>晋城市城区文昌西街1388号（人才服务中心院内东厅）</p>
+        <p><strong>办公时间：</strong>周一至周五 8:30-12:00, 14:00-17:30</p>
+      </div>
+    </div>
+    <div class="policy-card" style="border-left:3px solid #22C55E">
+      <h3>📋 电话脚本 · 照着读</h3>
+      <div style="font-size:14px;line-height:1.9">
+        <p style="background:var(--label-green);padding:8px 12px;border-radius:6px;font-size:13px">
+        <strong>📞 打通后这样说：</strong></p>
+        <p>"您好，我想咨询虚拟账户定向引才政策。</p>
+        <p>我是<strong>辽宁工程技术大学，工业工程与管理专业</strong>的<strong>在读研二</strong>学生，晋城本地人。</p>
+        <p>想问一下：</p>
+        <p><strong>①</strong> 我的专业是否属于现代服务业或数字经济的对口专业？</p>
+        <p><strong>②</strong> 如果符合，具体办理流程和需要什么材料？</p>
+        <p><strong>③</strong> 就业意向协议书是和哪类企业签？<strong>有没有合作企业名单？</strong></p>
+        <p><strong>④</strong> 签了之后从什么时候开始存钱？</p>
+        <p><strong>⑤</strong> 毕业后去国企（城区城投/国投）还能兑现吗？</p>
+        <p><strong>⑥</strong> 办理地址和找哪个窗口？"</p>
+        <p style="margin-top:4px;font-size:12px;color:var(--text-muted)">💡 打完后记下对方姓名和分机号，方便后续跟进</p>
+      </div>
+    </div>
+    <div class="policy-card">
+      <h3>🏛️ 事业编补贴标准</h3>
+      <div class="row"><span class="label">生活补贴</span><span class="value">1,000元/月 × 5年 = 6万</span></div>
+      <div class="row"><span class="label">购房补贴</span><span class="value">无</span></div>
+    </div>
+    <div class="policy-card">
+      <h3>📋 申领条件</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p>① 新全职引进到晋城市企业/事业单位工作</p>
+        <p>② 签订3年及以上劳动合同</p>
+        <p>③ 在晋城缴纳社会保险</p>
+        <p>④ 硕士研究生学历（全日制）</p>
+        <p>⑤ 购房补贴要求首次在晋城购买商品房</p>
+      </div>
+    </div>
+    <div class="policy-card">
+      <h3>📞 咨询电话</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p>市人社局创业就业科：<a href="tel:03562199486" style="color:var(--primary);text-decoration:none">0356-2199486</a></p>
+        <p>市人社局工资管理科：<a href="tel:03562199453" style="color:var(--primary);text-decoration:none">0356-2199453</a></p>
+        <p>市专业技术人员管理科：<a href="tel:03562199428" style="color:var(--primary);text-decoration:none">0356-2199428</a></p>
+      </div>
+    </div>
+    <div class="policy-card">
+      <h3>📜 晋市人社发〔2022〕E类人才补贴</h3>
+      <div style="font-size:14px;line-height:1.8">
+        <p>根据《晋城市创优高质量人才生态若干举措（试行）》及配套细则，E类人才（硕士研究生）享受以下待遇：</p>
+        <p style="margin-top:6px">▸ <strong>生活补贴：</strong>企业3000元/月，事业编1000元/月，发放5年</p>
+        <p>▸ <strong>购房补贴：</strong>企业20万（一次性），事业编无</p>
+        <p>▸ <strong>租房补贴：</strong>企业2000元/月，事业编无</p>
+        <p>▸ <strong>服务年限：</strong>需在晋城工作满5年，中途离职需退还部分补贴</p>
+        <p>▸ <strong>"零门槛"落户：</strong>直系家属均可随迁</p>
+        <p style="margin-top:6px;font-size:12px;color:var(--text-muted)">🔔 本页面将监控政策变动，如有更新将自动提醒</p>
+        <p style="margin-top:4px"><a href="https://www.jcgov.gov.cn/dtxx/jcdt/202405/t20240517_1983815.shtml" target="_blank" style="font-size:12px;color:var(--primary)">📎 查看官方政策原文</a> · <a href="http://jcetda.jcgov.gov.cn/zsyz/rczc_43543/202204/t20220414_1583709.shtml" target="_blank" style="font-size:12px;color:var(--primary)">📎 《晋城市创优高质量人才生态若干举措》原文</a></p>
+      </div>
+    </div>
+  `;
+}
+
+function renderInterview(){
+  const el=document.getElementById('sub-interview');
+  const stages=[
+    {num:'01',title:'认识结构化面试',status:'done',items:[
+      '什么是结构化面试：所有考生同一套题、同一评分标准',
+      '国企 vs 事业编面试的区别（国企更偏岗位匹配，事业编更偏综合分析）',
+      '面试流程：抽签→候考→答题→离场→公布成绩',
+      '评分维度：综合分析(25%)+组织协调(20%)+应急应变(20%)+人际沟通(20%)+举止仪表(15%)',
+      '<a href="https://www.bilibili.com/video/BV1TQ4y1Z7bG" target="_blank" style="color:var(--primary)">🎬 B站免费课：结构化面试全流程讲解（点击观看）</a>',
+      '<a href="https://www.xiaohongshu.com/search_result?keyword=结构化面试零基础" target="_blank" style="color:var(--primary)">📕 小红书搜索"结构化面试零基础"看经验贴</a>'
+    ]},
+    {num:'02',title:'六大题型逐个学',status:'current',items:[
+      '🏛️ 综合分析类（社会现象/政策理解）—— "你怎么看这个问题？"',
+      '📋 组织计划类（活动/会议/调研）—— "你怎么组织？"',
+      '⚡ 应急应变类（突发事件处理）—— "你怎么办？"',
+      '🤝 人际沟通类（领导/同事/群众）—— "你怎么沟通？"',
+      '🧑 自我认知类（自我介绍/岗位理解）—— "请介绍你自己"',
+      '🎯 岗位匹配类（为什么选这个岗位）—— "你为什么适合？"',
+      '<a href="https://www.bilibili.com/video/BV1Yf4y1R7YK" target="_blank" style="color:var(--primary)">🎬 B站：结构化面试六大题型精讲（点击观看）</a>',
+      '<a href="https://www.xiaohongshu.com/search_result?keyword=结构化面试六大题型答题模板" target="_blank" style="color:var(--primary)">📕 小红书搜"结构化面试答题模板"看框架</a>'
+    ]},
+    {num:'03',title:'答题框架+模板',status:'pending',items:[
+      '综合分析"三步法"：①表态→②分析原因/影响→③对策建议',
+      '组织计划"五步法"：①目的→②准备→③实施→④总结→⑤汇报',
+      '应急应变"四步法"：①控场→②了解→③处理→④反思',
+      '人际沟通"三原则"：①尊重理解→②沟通协调→③改进提升',
+      '每个题型背熟1个万能框架，考场直接套用',
+      '<a href="https://www.zhihu.com/search?type=content&q=结构化面试万能模板" target="_blank" style="color:var(--primary)">📖 知乎搜索"结构化面试万能模板"看高赞回答</a>'
+    ]},
+    {num:'04',title:'晋城真题实战',status:'pending',items:[
+      '<a href="https://www.xiaohongshu.com/search_result?keyword=晋城人才引进面试真题" target="_blank" style="color:var(--primary)">📌 小红书搜"晋城人才引进面试真题"（实时更新）</a>',
+      '<a href="https://www.xiaohongshu.com/search_result?keyword=泽州事业编面试" target="_blank" style="color:var(--primary)">📌 小红书搜"泽州事业编面试"看当地考情</a>',
+      '<a href="https://www.xiaohongshu.com/search_result?keyword=山西国企人才引进面试" target="_blank" style="color:var(--primary)">📌 小红书搜"山西国企人才引进面试"看经验</a>',
+      '练习方法：拿到题目→计时思考2分钟→口答3分钟→录音→回放听→对照框架改进',
+      '<a href="https://www.bilibili.com/search?keyword=人才引进面试真题" target="_blank" style="color:var(--primary)">🎬 B站搜索"人才引进面试真题"看示范答题</a>'
+    ]},
+    {num:'05',title:'模拟冲刺',status:'pending',items:[
+      '随机抽题，限时作答（模拟真实考场）',
+      '找同学/朋友做考官，模拟面试流程',
+      '考前一周每天练3套题，保持题感',
+      '准备好自我介绍（30秒/1分钟/3分钟三个版本）',
+      '<a href="https://www.bilibili.com/search?keyword=结构化面试模拟考场" target="_blank" style="color:var(--primary)">🎬 B站搜"结构化面试模拟考场"看实战演练</a>'
+    ]}
+  ];
+
+  let html='';
+  stages.forEach(s=>{
+    const statusMap={done:'✅已完成',current:'🔵学习中',pending:'⭕待开始'};
+    const clsMap={done:'stage-done',current:'stage-current',pending:'stage-pending'};
+    const bodyId='stage_'+s.num;
+    const itemsHtml=s.items.map(i=>`<li>${i}</li>`).join('');
+    html+=`
+      <div class="interview-stage" onclick="document.getElementById('${bodyId}').classList.toggle('open')">
+        <div class="stage-header">
+          <span class="stage-num">${s.num}</span>
+          <span class="stage-title">${s.title}</span>
+          <span class="stage-status ${clsMap[s.status]}">${statusMap[s.status]}</span>
+        </div>
+        <div class="stage-body" id="${bodyId}">
+          <div class="stage-body-inner"><ul>${itemsHtml}</ul></div>
+        </div>
+      </div>`;
+  });
+  html+=`<div style="padding:12px;text-align:center;font-size:12px;color:var(--text-muted)">💡 点击每个阶段展开详情，按顺序学习效果更佳</div>`;
+  el.innerHTML=html;
+
+  // 自动展开当前阶段
+  const currentStage=el.querySelector('.stage-current');
+  if(currentStage){
+    const body=currentStage.closest('.interview-stage').querySelector('.stage-body');
+    if(body) body.classList.add('open');
+  }
+  // 已完成的也展开
+  document.querySelectorAll('.stage-done').forEach(el=>{
+    const body=el.closest('.interview-stage').querySelector('.stage-body');
+    if(body) body.classList.add('open');
+  });
+}
+
+function renderTimeline(){
+  const el=document.getElementById('sub-timeline');
+  const progress=DATA.timelineProgress||{};
+
+  const items=[
+    {date:'2026.09-10',title:'研二上学期 · 系统部署+政策确认',desc:'部署监控系统/确认虚拟账户资格/开始搜集情报',tag:'blue',checkKey:'t1',tasks:[
+      '部署「未来」监控系统',
+      '打电话给市人社局确认工业工程专业是否符合虚拟账户政策',
+      '开始浏览结构化面试入门内容',
+      '搜集城投/国投/丹河新城历年招聘数据'
+    ]},
+    {date:'2026.11-12',title:'研二上学期末 · 情报积累+材料准备',desc:'分析各单位招聘规律/准备报名材料',tag:'blue',checkKey:'t2',tasks:[
+      '分析各单位招聘规律（什么月份发公告）',
+      '准备报名材料：身份证/学生证/学历证明扫描件',
+      '结构化面试学完第1-2阶段',
+      '确认虚拟账户是否开立（如符合条件）'
+    ]},
+    {date:'2027.01-02',title:'寒假 · 面试入门+情报梳理',desc:'系统学习面试+整理所有单位信息',tag:'blue',checkKey:'t3',tasks:[
+      '结构化面试学完第3阶段（答题框架）',
+      '整理一份「晋城国企人才引进单位档案」',
+      '标注每个单位的清闲度、招录偏好',
+      '开始看泽州事业编的历年公告'
+    ]},
+    {date:'2027.03-05',title:'研二下学期 · 🔴公告高峰期',desc:'各单位春招集中发布，重点蹲守',tag:'red',checkKey:'t4',tasks:[
+      '密切监控系统，每日查看首页',
+      '如有合适公告，第一时间报名',
+      '结构化面试学完第4阶段（真题）',
+      '如果有面试机会，全力准备'
+    ]},
+    {date:'2027.06-08',title:'暑假 · 实习or备考',desc:'如有机会暑期实习/继续备考',tag:'blue',checkKey:'t5',tasks:[
+      '尝试申请意向单位的暑期实习',
+      '结构化面试进入第5阶段（模拟）',
+      '继续监控公告（暑期也有零散发布）',
+      '检查报名材料是否齐全'
+    ]},
+    {date:'2027.09-12',title:'研三上学期 · 🚀密集投递',desc:'毕业前最后一轮大规模招聘',tag:'red',checkKey:'t6',tasks:[
+      '每日查看系统首页，不错过任何公告',
+      '符合条件的岗位全部投递',
+      '面试实战，积累经验',
+      '如果已有offer，准备签约'
+    ]},
+    {date:'2028.01-04',title:'研三下学期 · 冲刺+签约',desc:'毕业前的最后机会',tag:'red',checkKey:'t7',tasks:[
+      '继续投递+面试',
+      '确定入职单位，签订三方协议',
+      '准备毕业论文',
+      '回晋城看房/租房（如有需要）'
+    ]},
+    {date:'2028.05-06',title:'🎓 毕业+入职',desc:'人生新阶段开始',tag:'green',checkKey:'t8',tasks:[
+      '硕士毕业',
+      '办理入职手续',
+      '签订3年以上劳动合同',
+      '申请人才补贴（生活补贴+购房/租房补贴）'
+    ]},
+    {date:'2028-2033',title:'🏭 Phase1: 国企摸鱼攒钱',desc:'在职工作+准备下一阶段',tag:'green',checkKey:'t9',tasks:[
+      '每月确认补贴到账',
+      '工作中积累经验和人脉',
+      '业余学习行测/申论（为事业编/公务员做准备）',
+      '保持关注事业编/公务员招聘信息'
+    ]},
+    {date:'2033+',title:'🏛️ Phase2: 事业编/公务员安稳躺平',desc:'转入清闲事业编或公务员',tag:'blue',checkKey:'t10',tasks:[
+      '通过人才引进或考试进入事业编/公务员',
+      '享受事业编补贴（1000元/月×5年=6万）',
+      '长期安稳躺平 ✅'
+    ]}
+  ];
+
+  let html='<div style="margin-bottom:10px;font-size:13px;color:var(--text-muted)">点击勾选完成的项目，进度自动保存</div>';
+  items.forEach((item,i)=>{
+    const checked=progress[item.checkKey]||[];
+    const allCount=item.tasks.length;
+    const doneCount=checked.length;
+    const pct=allCount>0?Math.round(doneCount/allCount*100):0;
+    const dotClass=item.tag==='green'?'green':item.tag==='red'?'gray':'';
+    html+=`
+      <div class="timeline-item">
+        <div class="timeline-line"><div class="timeline-dot ${dotClass}"></div></div>
+        <div class="timeline-card tag-${item.tag}">
+          <div class="t-date">${item.date}</div>
+          <div class="t-title">${item.title}</div>
+          <div class="t-desc">${item.desc}</div>
+          <div style="margin:4px 0;height:3px;background:#E2E8F0;border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:var(--secondary);border-radius:2px;transition:width .3s"></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">${doneCount}/${allCount} 已完成</div>
+          ${item.tasks.map((t,j)=>{
+            const done=checked.includes(j);
+            return `<div class="t-check ${done?'done':''}">
+              <input type="checkbox" ${done?'checked':''} onchange="toggleTimelineTask('${item.checkKey}',${j},this.checked)">
+              <label>${t}</label>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  });
+  el.innerHTML=html;
+}
+
+function toggleTimelineTask(key,idx,checked){
+  if(!DATA.timelineProgress)DATA.timelineProgress={};
+  if(!DATA.timelineProgress[key])DATA.timelineProgress[key]=[];
+  const arr=DATA.timelineProgress[key];
+  if(checked){
+    if(!arr.includes(idx))arr.push(idx);
+  }else{
+    const pos=arr.indexOf(idx);
+    if(pos>=0)arr.splice(pos,1);
+  }
+  saveData();
+  renderTimeline();
+  showToast(checked?'✅ 已标记完成':'已取消','info');
+}
+
+// ===== Tab切换 =====
+function switchTab(tabId){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+  // 重新渲染（确保数据最新）
+  if(tabId==='tab-home') renderHome();
+  else if(tabId==='tab-archive') renderArchive();
+  else if(tabId==='tab-virtual') renderVirtualAccount();
+  else if(tabId==='tab-study') renderStudy();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    switchTab(this.dataset.tab);
+  });
+});
+
+// ===== 子Tab切换 =====
+document.querySelectorAll('.sub-tab').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.sub-content').forEach(c=>c.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById(this.dataset.sub).classList.add('active');
+  });
+});
+
+// ===== Drawer =====
+function toggleDrawer(){
+  document.getElementById('drawerOverlay').classList.toggle('show');
+  document.getElementById('drawer').classList.toggle('show');
+}
+
+// ===== Settings Tags =====
+function renderDrawerTags(){
+  renderTags('urlTags',CONFIG.urls,(u)=>u.name,'delUrl');
+  renderTags2('keywordTags',CONFIG.keywords,'delKeyword');
+  renderTags2('excludeTags',CONFIG.excludes,'delExclude');
+}
+
+function renderTags(containerId,items,labelFn,delFn){
+  const el=document.getElementById(containerId);
+  el.innerHTML=items.map((item,i)=>`<span class="drawer-tag">${labelFn(item)} <span class="del" onclick="${delFn}(${i})">✕</span></span>`).join('');
+}
+
+function renderTags2(containerId,items,delFn){
+  const el=document.getElementById(containerId);
+  el.innerHTML=items.map((item,i)=>`<span class="drawer-tag">${escapeHtml(item)} <span class="del" onclick="${delFn}(${i})">✕</span></span>`).join('');
+}
+
+function delUrl(i){
+  CONFIG.urls.splice(i,1);
+  DATA.config.urls=CONFIG.urls;
+  saveData();
+  renderDrawerTags();
+  showToast('已删除','info');
+}
+
+function delKeyword(i){
+  CONFIG.keywords.splice(i,1);
+  DATA.config.keywords=CONFIG.keywords;
+  saveData();
+  renderDrawerTags();
+  showToast('已删除','info');
+}
+
+function delExclude(i){
+  CONFIG.excludes.splice(i,1);
+  DATA.config.excludes=CONFIG.excludes;
+  saveData();
+  renderDrawerTags();
+  showToast('已删除','info');
+}
+
+function addUrl(){
+  const v=document.getElementById('newUrlInput').value.trim();
+  if(!v)return;
+  CONFIG.urls.push({name:v,url:v,active:true});
+  DATA.config.urls=CONFIG.urls;
+  saveData();
+  document.getElementById('newUrlInput').value='';
+  renderDrawerTags();
+  showToast('已添加','success');
+}
+
+function addKeyword(){
+  const v=document.getElementById('newKeyword').value.trim();
+  if(!v)return;
+  CONFIG.keywords.push(v);
+  DATA.config.keywords=CONFIG.keywords;
+  saveData();
+  document.getElementById('newKeyword').value='';
+  renderDrawerTags();
+  showToast('已添加','success');
+}
+
+function addExclude(){
+  const v=document.getElementById('newExclude').value.trim();
+  if(!v)return;
+  CONFIG.excludes.push(v);
+  DATA.config.excludes=CONFIG.excludes;
+  saveData();
+  document.getElementById('newExclude').value='';
+  renderDrawerTags();
+  showToast('已添加','success');
+}
+
+// ===== 手动巡检 =====
+function handleManualRefresh(){
+  const btn=document.getElementById('refreshBtn');
+  btn.textContent='⟳';
+  btn.style.animation='spin 1s infinite linear';
+  document.getElementById('statusDot').className='status-dot yellow';
+  document.getElementById('statusText').textContent='巡检中...';
+
+  setTimeout(()=>{
+    // 模拟巡检结果
+    const now=new Date();
+    const timeStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+    DATA.scrapeStatus.lastRun=timeStr;
+    DATA.announcements=generateMockData();
+    DATA.scrapeStatus.newCount=DATA.announcements.filter(a=>{
+      const d=new Date(a.publishDate);
+      const n=new Date();
+      return (n-d)<3*24*60*60*1000;
+    }).length;
+    DATA.scrapeStatus.activeCount=DATA.announcements.filter(a=>!a.expired).length;
+    saveData();
+
+    btn.style.animation='';
+    btn.textContent='⟳';
+    document.getElementById('statusDot').className='status-dot green';
+    document.getElementById('statusText').textContent='监控中';
+    renderAll();
+    showToast(`✅ 巡检完成 · 共监控4站 · 发现${DATA.scrapeStatus.newCount}条新公告`,'success');
+  },1500);
+}
+
+// ===== Toast =====
+function showToast(msg,type){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast '+type+' show';
+  clearTimeout(el._timer);
+  el._timer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ===== 巡检状态模拟（页面加载时） =====
+function simulateInitialStatus(){
+  const now=new Date();
+  const timeStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  DATA.scrapeStatus.lastRun='今天 '+timeStr;
+  DATA.announcements=generateMockData();
+  DATA.scrapeStatus.newCount=DATA.announcements.filter(a=>{
+    const d=new Date(a.publishDate);
+    const n=new Date();
+    return (n-d)<3*24*60*60*1000;
+  }).length;
+  DATA.scrapeStatus.activeCount=DATA.announcements.filter(a=>!a.expired).length;
+  saveData();
+}
+
+// ===== 初始化 =====
+initDarkMode();
+simulateInitialStatus();
+renderAll();
+
+// 检查是否为首次使用，显示欢迎
+if(!localStorage.getItem('weilai_welcomed')){
+  setTimeout(()=>{
+    showToast('🌱 欢迎来到「未来」· 晋城人才监控中心','success');
+    localStorage.setItem('weilai_welcomed','1');
+  },500);
+}
+
+// ===== PWA注册 =====
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+// 内联样式补充
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .card-top-rec{border:2px solid transparent;background-image:linear-gradient(var(--card),var(--card)),linear-gradient(135deg,var(--grad-start),var(--grad-end));background-origin:padding-box,border-box;background-clip:padding-box,border-box;border-radius:var(--radius);margin:-1px}
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

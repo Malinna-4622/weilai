@@ -1,0 +1,24 @@
+{
+  "monitoredUrls": [
+    {"name": "晋城市人社局", "url": "http://rsj.jcgov.gov.cn/", "selector": ".tzgg-list a", "active": true},
+    {"name": "晋城市政府官网", "url": "https://www.jcgov.gov.cn/", "selector": ".news-list a", "active": true},
+    {"name": "晋城人才网", "url": "https://www.jcrcw.com/", "selector": ".news-list a", "active": true},
+    {"name": "泽州县人民政府", "url": "http://www.zezhou.gov.cn/", "selector": ".announcement-list a", "active": true}
+  ],
+  "keywords": [
+    "市属国企人才引进", "晋城城投", "晋城国投", "丹河新城",
+    "泽州县紧缺高层次人才引进", "中小企业发展促进中心",
+    "城镇集体工业联合社", "工信产业岗", "工程管理", "工业工程",
+    "全日制硕士研究生", "人才引进"
+  ],
+  "excludeKeywords": [
+    "限男性", "乡镇", "综合执法", "应急管理",
+    "住建局", "公安", "中小学", "医疗", "仅限应届生"
+  ],
+  "userProfile": {
+    "major": "工业工程与管理",
+    "gender": "女",
+    "graduation": "2028-06",
+    "hasHouse": true
+  }
+}

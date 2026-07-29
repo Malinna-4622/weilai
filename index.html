@@ -566,7 +566,14 @@ const DEFAULT_DATA = {
   darkMode: false
 };
 
-// ===== 数据管理 =====
+// ===== 兼容补丁 =====
+if(!Element.prototype.closest){
+  Element.prototype.closest=function(sel){
+    let el=this;
+    do{if(el.matches(sel))return el;el=el.parentElement||el.parentNode;}while(el&&el.nodeType===1);
+    return null;
+  };
+}
 function loadData(){
   try{
     const d=JSON.parse(localStorage.getItem('weilai_data'));
@@ -1244,7 +1251,8 @@ function renderCard(a,isTop){
 function toggleCard(id){
   const el=document.getElementById(id);
   if(!el)return;
-  const card=el.closest('.card');
+  let card=el.closest('.card');
+  if(!card) card=el.closest('div.card');
   if(card) card.classList.toggle('expanded');
 }
 function toggleChecklistItem(key,checked){
